@@ -735,6 +735,17 @@ function openTutorial(){
 
 const guide = {}
 
+guide.addingMods = {
+  name: `Mods: How to Add Mods`,
+  description: function() { return `Mods are optional. The game can run with no mods installed, with a few mods, or with many mods enabled.<br><br><strong>Install from Workshop</strong><br>Open Settings, click Mods, open the Workshop tab, then click Install on the mod you want. After it is installed, enable it from the Installed tab.<br><br><strong>Install a .mod file</strong><br>Open Settings, click Mods, then drag and drop a .mod file into the import area. You can also click the drop area to select the file manually. A .mod file is a package made for UltraPokechill mods.<br><br><strong>Enable or disable mods</strong><br>Use the toggle on each mod card. Some mods apply instantly, while others are safest after refreshing the page once.<br><br><strong>Where mods are saved</strong><br>Imported and Workshop mods are linked to the browser storage, so they stay available even if you switch, export, or import game saves. If you clear browser site data, imported mods can be removed.`}
+}
+
+guide.creatingMods = {
+  name: `Mods: How to Create Mods (Coming Soon)`,
+  disabled: true,
+  description: function() { return `Coming soon.`}
+}
+
 guide.inspecting = {
   name: `Inspecting`,
   description: function() { return `Right click/long press on most elements can give further information. You can further right click/long press on information within information.<br><br>Some elements that can be inspected include areas, trainers, moves, status effects, wild pokemon, team pokemon and items`}
@@ -825,6 +836,7 @@ function setGuide(){
 
     const div = document.createElement("div")
 
+    div.className = guide[i].disabled ? "guide-entry guide-entry-disabled" : "guide-entry"
     div.innerHTML = `<div>${guide[i].name}</div>`
 
     document.getElementById("guide-list").appendChild(div)
@@ -832,6 +844,8 @@ function setGuide(){
 
 
       div.addEventListener("click", e => {
+        if (guide[i].disabled) return
+
         document.getElementById("tooltipTop").style.display = `none`
         document.getElementById("tooltipTitle").innerHTML = `${guide[i].name}`
         document.getElementById("tooltipMid").style.display = `none`
