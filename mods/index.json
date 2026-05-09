@@ -1,0 +1,9 @@
+{
+  "mods": [
+    "battleNumbers.mod",
+    "adminDebugger.mod",
+    "allStarters.mod",
+    "speedBattles.mod",
+    "movePresets.mod"
+  ]
+}
