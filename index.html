@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokechill</title>
-    <link rel="icon" type="image/x-icon" href="img/icons/icon.png">
-    <link rel="stylesheet" href="styles.css?v=guide-mods-20260509">
+    <title>UltraPokechill</title>
+    <link rel="icon" type="image/x-icon" href="/img/icons/logo.png">
+    <link rel="stylesheet" href="styles.css?v=workshop-20260509">
 
 
 
@@ -30,6 +30,8 @@
     </div>
 
     <div id="game-version">v0.1</div>
+    <div id="translation-notice" style="position: fixed; bottom: 5px; right: 8px; font-size: 10px; color: rgba(255,255,255,0.4); z-index: 10000; pointer-events: none; font-family: monospace;">A tradução para Português (Brasil) não está 100% completa.</div>
+
 
 
 
@@ -459,36 +461,41 @@
         <div id="settings-menu-header">
 
             <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.063 16.658l.26-1.477m2.605-14.772l.26-1.477m0 17.726l-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205L12 12m6.894 5.785l-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864l-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495"/></svg>
-                Settings </span>
+                <strong data-i18n="menu.settings">Settings</strong> </span>
             
             
         </div>
 
         <div class="settings-list">
-            <div onclick="exportData()">Export Data</div>
-            <div onclick="importData()">Import Data</div>
-            <div onclick="textData()">Data to Text</div>
-            <div onclick="window.UltraMods?.openMenu?.()">Mods</div>
+            <div onclick="exportData()"><span data-i18n="settings.export">Export Data</span></div>
+            <div onclick="importData()"><span data-i18n="settings.import">Import Data</span></div>
+            <div onclick="textData()"><span data-i18n="settings.text">Data to Text</span></div>
+            <div onclick="window.UltraMods?.openMenu?.()"><span data-i18n="settings.mods">Mods</span></div>
 
-            <div>Theme: <select id="settings-theme">
-                <option value="default">default</option>
-                <option value="dark">dark</option>
-                <option value="verdant">verdant</option>
-                <option value="lilac">lilac</option>
-                <option value="cherry">cherry</option>
-                <option value="onyx">onyx</option>
-                <option value="coral">coral</option>
-                <option value="oled">oled</option>
+            <div><span data-i18n="language.label">Language</span>: <select id="settings-language">
+                <option value="en" data-i18n="language.english">English</option>
+                <option value="pt" data-i18n="language.portuguese">Portuguese</option>
             </select></div>
 
-            <div data-help="settingsNewPkmn" style="cursor: help;">Hide non-new Pokemon got in summary: <select id="settings-hide-got">
-                <option value="false">disabled</option>
-                <option value="true">enabled</option>
+            <div><span data-i18n="settings.theme">Theme</span>: <select id="settings-theme">
+                <option value="default" data-i18n="common.default">default</option>
+                <option value="dark" data-i18n="common.dark">dark</option>
+                <option value="verdant" data-i18n="common.verdant">verdant</option>
+                <option value="lilac" data-i18n="common.lilac">lilac</option>
+                <option value="cherry" data-i18n="common.cherry">cherry</option>
+                <option value="onyx" data-i18n="common.onyx">onyx</option>
+                <option value="coral" data-i18n="common.coral">coral</option>
+                <option value="oled" data-i18n="common.oled">oled</option>
             </select></div>
 
-            <div data-help="settingsAlternateWild" style="cursor: help;">Sustract 1 to current Wild Area rotation: <select id="settings-alternate-rotation">
-                <option value="false">disabled</option>
-                <option value="true">enabled</option>
+            <div data-help="settingsNewPkmn" style="cursor: help;"><span data-i18n="settings.hideGot">Hide non-new Pokemon got in summary</span>: <select id="settings-hide-got">
+                <option value="false" data-i18n="common.disabled">disabled</option>
+                <option value="true" data-i18n="common.enabled">enabled</option>
+            </select></div>
+
+            <div data-help="settingsAlternateWild" style="cursor: help;"><span data-i18n="settings.alternateRotation">Sustract 1 to current Wild Area rotation</span>: <select id="settings-alternate-rotation">
+                <option value="false" data-i18n="common.disabled">disabled</option>
+                <option value="true" data-i18n="common.enabled">enabled</option>
             </select></div>
 
             <!--<div>Tutorials: <select id="settings-tutorial">
@@ -503,14 +510,14 @@
         document.getElementById("tooltipBottom").innerHTML = `Right Click/Long press to see the details<div id="tooltip-modifiers-list"><div style="pointer-events:none; background:#AD5957; color:white">Challenges</div> <div data-help="ModNuzloke"><span>Nuzloke Mode</span> <input type="checkbox" id="checkbox-mode-nuzloke" onclick="updateSettings(true)"></div>  <div data-help="ModHard"><span>Hard Mode</span> <input type="checkbox" id="checkbox-mode-hard" onclick="updateSettings(true)"></div> <div style="pointer-events:none; background:#57AD5D; color:white">Cheats</div>  <div data-help="ModNoIvs"><span>No IVs</span><input type="checkbox" id="checkbox-mode-ivs" onclick="updateSettings(true)"></div>  <div data-help="ModAfk"><span>Longer AFK</span><input type="checkbox" id="checkbox-mode-afk" onclick="updateSettings(true)"></div> </div>`
         openTooltip(); updateSettings()'
         
-        >Game modifiers</div>
+        ><span data-i18n="settings.gameModifiers">Game modifiers</span></div>
 
 
             <div onclick='document.getElementById("tooltipTop").style.display = `none`
         document.getElementById("tooltipTitle").innerHTML = `Credits`
         document.getElementById("tooltipMid").style.display = `none`
-        document.getElementById("tooltipBottom").innerHTML = `Made by <span onclick="secretFight(areas.missingArea.id)">Duck</span><br><br>Mod support version by the UltraPokechill modded build creator, made with the community in mind so players can install, share, and create their own mods.<br><br>Pokemon and trainer sprites by Pokemon Showdown (Including artists: Beliot419, kyledove, Gnomowladny, Brumirage and ZacWeavile. Go check their work. Now.)<br><br>Gen 9 sprites by KingOfThe-X-Roads<br><br>All characters and related assets featured in this game are the exclusive property of Nintendo, Creatures Inc., and The Pokémon Company, and are used here strictly for non-commercial purposes.`
-        openTooltip()' >Credits</div>
+        document.getElementById("tooltipBottom").innerHTML = `Made by <span onclick="secretFight(areas.missingArea.id)">Duck</span><br><br>Pokemon and trainer sprites by Pokemon Showdown (Including artists: Beliot419, kyledove, Gnomowladny, Brumirage and ZacWeavile. Go check their work. Now.)<br><br>Gen 9 sprites by KingOfThe-X-Roads<br><br>All characters and related assets featured in this game are the exclusive property of Nintendo, Creatures Inc., and The Pokemon Company, and are used here strictly for non-commercial purposes.`
+        openTooltip()' ><span data-i18n="settings.credits">Credits</span></div>
             <div onclick="window.open('https://discord.gg/VnukKfSs3S', '_blank')">Discord</div>
 
             <div style="margin-top: 3rem;background: rgb(206, 83, 83); color: white; " onclick='document.getElementById("tooltipTop").style.display = `none`
@@ -519,7 +526,7 @@
         document.getElementById("tooltipBottom").innerHTML = `<div onClick = "clearData()" style="cursor:pointer; font-size:2rem" id="prevent-tooltip-exit">Yeah!</div>`
         openTooltip()'
             
-            >Wipe Data</div>
+            ><span data-i18n="settings.wipe">Wipe Data</span></div>
 
 
         </div>
@@ -531,7 +538,7 @@
        <div id="disclaimer-menu" style="display: none;">
         This project is entirely unofficial!
         <br><br>
-        All characters and related intellectual property featured are the exclusive property of Nintendo, Creatures Inc., and The Pokémon Company.
+        All characters and related intellectual property featured are the exclusive property of Nintendo, Creatures Inc., and The Pokemon Company.
         <br><br>
         Any use of assets is solely for non-commercial and entertainment purposes. No ownership is claimed, and all rights remain with their respective owners
         <br><br>
@@ -540,11 +547,11 @@
 
        <div id="starter-menu" style="display: none;">
 
-        <span>Select a starter!</span>
+        <span data-i18n="starter.title">Select a starter!</span>
 
         <button type="button" id="starter-mods-button" onclick="window.UltraMods?.openMenu?.()">
             <img src="img/items/abilityCapsule.png" alt="">
-            Mods
+            <strong data-i18n="starter.mods">Mods</strong>
         </button>
 
         <div class="starter-list">
@@ -581,7 +588,7 @@
             <div id="guide-menu-header">
             <span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M6.5 16.039q1.31 0 2.547.3t2.453.98V7.508q-1.083-.773-2.386-1.16q-1.305-.386-2.614-.386q-.9 0-1.576.107t-1.501.4q-.23.077-.327.222Q3 6.835 3 7.008v9.015q0 .27.192.394t.423.03q.548-.185 1.267-.297t1.618-.111m6 1.28q1.216-.678 2.453-.98t2.547-.3q.9 0 1.618.111t1.267.296q.23.096.423-.029t.192-.394V7.008q0-.173-.096-.308q-.096-.134-.327-.23q-.825-.293-1.501-.4T17.5 5.961q-1.31 0-2.613.386q-1.304.387-2.387 1.16zm-.5 1.137q-.235 0-.432-.059t-.376-.15q-1.09-.595-2.27-.902T6.5 17.04q-.78 0-1.534.13q-.753.131-1.466.42q-.544.217-1.022-.131T2 16.496V6.831q0-.371.195-.689t.547-.442q.881-.388 1.833-.563T6.5 4.962q1.47 0 2.866.423q1.398.423 2.634 1.23q1.237-.807 2.634-1.23t2.866-.423q.973 0 1.925.175t1.833.563q.352.125.547.442t.195.689v9.665q0 .614-.516.943q-.517.328-1.1.111q-.693-.27-1.418-.39q-.724-.121-1.466-.121q-1.24 0-2.421.306t-2.271.901q-.18.093-.376.151q-.197.059-.432.059m1.885-9.508q0-.11.076-.222t.18-.168q.763-.346 1.613-.53q.85-.182 1.746-.182q.48 0 .91.053t.886.153q.129.03.224.135q.096.104.096.257q0 .252-.15.366t-.402.052q-.37-.075-.757-.103q-.388-.028-.807-.028q-.804 0-1.573.154q-.77.154-1.46.43q-.257.099-.42-.005t-.162-.362m0 5.423q0-.11.076-.231q.076-.123.18-.178q.725-.346 1.613-.52q.888-.173 1.746-.173q.48 0 .91.053t.886.153q.129.03.224.135q.096.104.096.257q0 .252-.15.366t-.402.052q-.37-.075-.757-.103q-.388-.028-.807-.028q-.784 0-1.544.16q-.76.161-1.45.457q-.258.118-.44-.003t-.181-.397m0-2.692q0-.11.076-.222t.18-.168q.763-.347 1.613-.53q.85-.182 1.746-.182q.48 0 .91.053t.886.153q.129.03.224.134q.096.104.096.258q0 .252-.15.366t-.402.051q-.37-.075-.757-.102q-.388-.028-.807-.028q-.804 0-1.573.154q-.77.153-1.46.43q-.257.098-.42-.005q-.162-.105-.162-.362"/></svg>
-Game Guide
+<strong data-i18n="guide.title">Game Guide</strong>
 
             </span>
             
@@ -1486,37 +1493,37 @@ Game Guide
 
         <div class="menu-item" id="menu-item-travel" onClick="switchMenu('travel')">
             <img src="img/items/oldMap.png">
-            <span>Travel</span>
+            <span data-i18n="menu.travel">Travel</span>
         </div>
 
         <div class="menu-item" id="menu-item-vs" onClick="switchMenu('vs')">
             <img src="img/items/vs.png">
-            <span>VS</span>
+            <span data-i18n="menu.vs">VS</span>
         </div>
 
         <div class="menu-item" id="menu-item-items" onClick="switchMenu('items')">
             <img src="img/items/items.png">
-            <span>Items</span>
+            <span data-i18n="menu.items">Items</span>
         </div>
 
         <div class="menu-item" id="menu-item-team" onClick="switchMenu('team')">
             <img src="img/items/pokeball.png">
-            <span>Team</span>
+            <span data-i18n="menu.team">Team</span>
         </div>
 
         <div class="menu-item" id="menu-item-dex" onClick="switchMenu('dex')">
             <img src="img/items/dex.png">
-            <span>Dex</span>
+            <span data-i18n="menu.dex">Dex</span>
         </div>
 
         <div class="menu-item" id="menu-item-shop" onClick="switchMenu('shop')">
             <img src="img/items/maxPotion.png">
-            <span>Poke-Mart</span>
+            <span data-i18n="menu.shop">Poke-Mart</span>
         </div>
 
         <div class="menu-item" id="menu-item-training" onClick="switchMenu('training')">
             <img src="img/items/blackBelt.png">
-            <span>Training</span>
+            <span data-i18n="menu.training">Training</span>
         </div>
 
         <!--
@@ -1530,22 +1537,22 @@ Game Guide
 
         <div class="menu-item" id="menu-item-genetics" onClick="switchMenu('genetics')">
             <img src="img/items/dnaSplicer.png">
-            <span>Genetics</span>
+            <span data-i18n="menu.genetics">Genetics</span>
         </div>
 
         <div class="menu-item" id="menu-mystery-gift" onClick="claimMysteryGift()">
             <img src="img/items/gift.png">
-            <span>Mystery Gift</span>
+            <span data-i18n="menu.mysteryGift">Mystery Gift</span>
         </div>
 
         <div class="menu-item" id="menu-export-reward" onClick="claimExportReward()">
             <img src="img/items/parcel.png">
-            <span>Export Reward</span>
+            <span data-i18n="menu.exportReward">Export Reward</span>
         </div>
 
         <div class="menu-item" id="menu-wonder-trade" onClick="claimWonderTrade()">
             <img src="img/items/beastball.png">
-            <span>Wonder Trade</span>
+            <span data-i18n="menu.wonderTrade">Wonder Trade</span>
         </div>
 
 
@@ -1553,28 +1560,28 @@ Game Guide
 
         <div class="menu-item" id="menu-dimension" onClick="switchMenu('dimension')">
             <img src="img/items/megaChunk.png">
-            <span>Mega Dimension</span>
+            <span data-i18n="menu.megaDimension">Mega Dimension</span>
         </div>
 
 
         <div class="menu-item" id="menu-item-dictionary" onClick="switchMenu('dictionary')">
             <img src="img/items/journal.png">
-            <span>Dictionary</span>
+            <span data-i18n="menu.dictionary">Dictionary</span>
         </div>
 
         <div class="menu-item" id="menu-item-guide" onClick="switchMenu('guide')">
             <img src="img/items/tv.png">
-            <span>Guide</span>
+            <span data-i18n="menu.guide">Guide</span>
         </div>
 
         <div class="menu-item" id="menu-item-settings" onClick="switchMenu('settings')">
             <img src="img/items/key.png">
-            <span>Settings</span>
+            <span data-i18n="menu.settings">Settings</span>
         </div>
 
         <div class="menu-item" id="menu-item-fullscreen" onclick="document.documentElement.requestFullscreen(); openMenu()">
             <img src="img/items/wideLens.png">
-            <span>Full Screen</span>
+            <span data-i18n="menu.fullScreen">Full Screen</span>
         </div>
 
 
@@ -1718,7 +1725,7 @@ Game Guide
     <script src="scripts/areasDictionary.js"></script>
 
     <script src="scripts/PR/autoTeamBuilding.js"></script>
-    <script src="scripts/PR/movesetGenerator.js?v=asset-path-20260509"></script>
+    <script src="scripts/PR/movesetGenerator.js"></script>
     <script src="scripts/PR/teamDuplicate.js"></script>
     <script src="scripts/PR/updateCheck.js"></script>
     
@@ -1730,13 +1737,14 @@ Game Guide
 
 
 
-    <script src="scripts/script.js?v=guide-mods-20260509"></script>
+    <script src="scripts/localization.js?v=language-deep-audit-4-20260509"></script>
+    <script src="scripts/script.js?v=language-fix-20260509"></script>
     <script src="scripts/teams.js"></script>
-    <script src="scripts/explore.js?v=defeat-tracker-20260508"></script>
+    <script src="scripts/explore.js?v=language-fix-20260509"></script>
     <script src="scripts/mods.js?v=move-presets-save-20260509"></script>
-    <script src="scripts/shop.js"></script>
+    <script src="scripts/shop.js?v=language-fix-20260509"></script>
     <script src="scripts/dictionarySearch.js"></script>
-    <script src="scripts/tooltip.js"></script>
+    <script src="scripts/tooltip.js?v=language-deep-audit-4-20260509"></script>
     <script src="scripts/decor.js"></script>
 
     <script src="scripts/save.js"></script>

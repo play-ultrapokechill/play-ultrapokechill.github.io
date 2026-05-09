@@ -71,6 +71,32 @@ function voidAnimation(divName, animationName) {
 
 function format(input) {
     let str = String(input);
+    let kind;
+    if (move[input]?.rename) str = String(move[input].rename);
+    if (pkmn[input]?.rename) str = String(pkmn[input].rename);
+    if (ability[input]?.rename) str = String(ability[input].rename);
+    if (item[input]?.rename) str = String(item[input].rename);
+    if (field[input]?.rename) str = String(field[input].rename);
+
+    if (move[input]) kind = "move";
+    else if (pkmn[input]) kind = "pokemon";
+    else if (ability[input]) kind = "ability";
+    else if (item[input]) kind = "item";
+    else if (field[input]) kind = "field";
+
+    str = str.replace(/hisuian/gi, 'hsn. ');
+    str = str.replace(/alolan/gi, 'aln. ');
+
+    const formatted = str
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/\b\w/g, c => c.toUpperCase())
+        .replace(/Mega /gi, 'M. ');
+
+    return window.UltraLocale?.formatName?.(input, formatted, kind) || formatted;
+}
+
+function formatAsset(input) {
+    let str = String(input);
     if (move[input]?.rename) str = String(move[input].rename);
     if (pkmn[input]?.rename) str = String(pkmn[input].rename);
     if (ability[input]?.rename) str = String(ability[input].rename);
@@ -657,7 +683,7 @@ function updateItemsGot(){
         divItem.dataset.item = i
 
         if (item[i].type !== "tm") divItem.innerHTML = `<img src="img/items/${i}.png"> <span>x${item[i].newItem}</span>`;
-        if (item[i].type == "tm") divItem.innerHTML = `<img src="img/items/tm${format(move[item[i].move].type)}.png"> <span>x${item[i].newItem}</span>`;
+        if (item[i].type == "tm") divItem.innerHTML = `<img src="img/items/tm${formatAsset(move[item[i].move].type)}.png"> <span>x${item[i].newItem}</span>`;
 
 
         document.getElementById("explore-drops").appendChild(divItem);
@@ -1008,7 +1034,7 @@ function leaveCombat(){
         divItem.className = "area-end-item";
         divItem.dataset.item = i
         if (item[i].type !== "tm") divItem.innerHTML = `<img src="img/items/${i}.png"><span>+${item[i].newItem}</span>`;
-        if (item[i].type == "tm") divItem.innerHTML = `<img src="img/items/tm${format(move[item[i].move].type)}.png"><span>+${item[i].newItem}</span>`;
+        if (item[i].type == "tm") divItem.innerHTML = `<img src="img/items/tm${formatAsset(move[item[i].move].type)}.png"><span>+${item[i].newItem}</span>`;
         document.getElementById("area-end-item-list").appendChild(divItem);
 
         item[i].newItem = 0;
@@ -6662,7 +6688,7 @@ function updateItemBag(){
 
 
         div.dataset.item = i
-        if (item[i].type == "tm") div.innerHTML = `<img src="img/items/tm${format(move[item[i].move].type)}.png"> <span class="item-list-name">${format(i)} ${subtitle}<strong style="opacity:0.6; font-weight:200; white-space:nowrap; font-size:0.9rem; margin-left:0.2rem"> (${move[item[i].move].power} BP, ${format(move[item[i].move].split).slice(0, 3)})</strong> </span>  <span>x${item[i].got}</span>`
+        if (item[i].type == "tm") div.innerHTML = `<img src="img/items/tm${formatAsset(move[item[i].move].type)}.png"> <span class="item-list-name">${format(i)} ${subtitle}<strong style="opacity:0.6; font-weight:200; white-space:nowrap; font-size:0.9rem; margin-left:0.2rem"> (${move[item[i].move].power} BP, ${format(move[item[i].move].split).slice(0, 3)})</strong> </span>  <span>x${item[i].got}</span>`
         else if (item[i].type == "memory") div.innerHTML = `<img src="img/items/${item[i].image}Memory.png"> <span class="item-list-name">${format(i)} ${subtitle}</span> <span>x${item[i].got}</span>`
         else if (item[i].type == "decor") div.innerHTML = `<img src="img/decor/${i}.png" style="scale:1; margin:0 -1rem"> <span class="item-list-name">${format(i)} ${subtitle}</span> <span>x${item[i].got}</span>`
         else div.innerHTML = `<img src="img/items/${i}.png"> <span class="item-list-name">${format(i)} ${subtitle}</span> <span>x${item[i].got}</span>`
@@ -10586,6 +10612,9 @@ window.addEventListener('load', function() {
 
 
     loadGame();
+    if (saved.language === undefined) saved.language = window.UltraLocale?.getLanguage?.() || "en";
+    window.UltraLocale?.applyStaticTranslations?.();
+    if (typeof setGuide === "function") setGuide();
     getSeed();
     seasonCheck();
 

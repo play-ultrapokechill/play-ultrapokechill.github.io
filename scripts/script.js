@@ -231,10 +231,15 @@ function updateGameVersion() {
 
 //--Theme settings
 saved.theme = "default"
+saved.language = undefined
 
 document.getElementById("settings-theme").addEventListener("change", e => {
   saved.theme = document.getElementById(`settings-theme`).value
   changeTheme()
+});
+
+document.getElementById("settings-language")?.addEventListener("change", e => {
+  window.UltraLocale?.setLanguage?.(document.getElementById(`settings-language`).value)
 });
 
 saved.hideGotPkmn = "false"
@@ -261,14 +266,14 @@ function openCredits() {
     <br><br>
     Gen 9 sprites by KingOfThe-X-Roads
     <br><br>
-    All characters and related assets featured in this game are the exclusive property of Nintendo, Creatures Inc., and The Pokémon Company, and are used here strictly for non-commercial purposes.
+    All characters and related assets featured in this game are the exclusive property of Nintendo, Creatures Inc., and The Pokemon Company, and are used here strictly for non-commercial purposes.
   `;
   openTooltip();
 }
 
 document.addEventListener("click", event => {
   const target = event.target?.closest?.(".settings-list div");
-  if (!target || target.textContent.trim() !== "Credits") return;
+  if (!target || !target.querySelector?.("[data-i18n='settings.credits']")) return;
 
   event.preventDefault();
   event.stopPropagation();
@@ -735,6 +740,15 @@ function openTutorial(){
 
 const guide = {}
 
+function getGuideName(id) {
+  return window.UltraLocale?.guideName?.(id, guide[id].name) || guide[id].name;
+}
+
+function getGuideDescription(id) {
+  const fallback = guide[id].description();
+  return window.UltraLocale?.guideDescription?.(id, fallback) || fallback;
+}
+
 guide.addingMods = {
   name: `Mods: How to Add Mods`,
   description: function() { return `Mods are optional. The game can run with no mods installed, with a few mods, or with many mods enabled.<br><br><strong>Install from Workshop</strong><br>Open Settings, click Mods, open the Workshop tab, then click Install on the mod you want. After it is installed, enable it from the Installed tab.<br><br><strong>Install a .mod file</strong><br>Open Settings, click Mods, then drag and drop a .mod file into the import area. You can also click the drop area to select the file manually. A .mod file is a package made for UltraPokechill mods.<br><br><strong>Enable or disable mods</strong><br>Use the toggle on each mod card. Some mods apply instantly, while others are safest after refreshing the page once.<br><br><strong>Where mods are saved</strong><br>Imported and Workshop mods are linked to the browser storage, so they stay available even if you switch, export, or import game saves. If you clear browser site data, imported mods can be removed.`}
@@ -753,7 +767,7 @@ guide.inspecting = {
 
 guide.stats = {
   name: `Battle: Stats`,
-  description: function() { return `Each species of Pokémon share the same base stats that determine the actual stats of a Pokémon at a given level<br><br>Stats determine how much damage they deal and receive (see Battle: Moves). The speed stat determines how fast a Pokemon executes a move<br><br>Individual Values, or IV's, multiply base stats, and can be increased by getting multiple copies of Pokemon<br><br>Depending on their base stats, a Division will be asigned to them. You might use this Division letter to quickly assess which Pokemon can perform better on the short term`}
+  description: function() { return `Each species of Pokemon share the same base stats that determine the actual stats of a Pokemon at a given level<br><br>Stats determine how much damage they deal and receive (see Battle: Moves). The speed stat determines how fast a Pokemon executes a move<br><br>Individual Values, or IV's, multiply base stats, and can be increased by getting multiple copies of Pokemon<br><br>Depending on their base stats, a Division will be asigned to them. You might use this Division letter to quickly assess which Pokemon can perform better on the short term`}
 }
 
 guide.abilities = {
@@ -830,6 +844,9 @@ guide.powerCost = {
 }
 
 function setGuide(){
+  const guideList = document.getElementById("guide-list")
+  if (!guideList) return
+  guideList.innerHTML = ""
 
   for (const i in guide){
 
@@ -837,9 +854,9 @@ function setGuide(){
     const div = document.createElement("div")
 
     div.className = guide[i].disabled ? "guide-entry guide-entry-disabled" : "guide-entry"
-    div.innerHTML = `<div>${guide[i].name}</div>`
+    div.innerHTML = `<div>${getGuideName(i)}</div>`
 
-    document.getElementById("guide-list").appendChild(div)
+    guideList.appendChild(div)
 
 
 
@@ -847,9 +864,9 @@ function setGuide(){
         if (guide[i].disabled) return
 
         document.getElementById("tooltipTop").style.display = `none`
-        document.getElementById("tooltipTitle").innerHTML = `${guide[i].name}`
+        document.getElementById("tooltipTitle").innerHTML = `${getGuideName(i)}`
         document.getElementById("tooltipMid").style.display = `none`
-        document.getElementById("tooltipBottom").innerHTML = `<span style="overflow-y:scroll; max-height:25rem; display:inline-block;">${guide[i].description()}</span>`
+        document.getElementById("tooltipBottom").innerHTML = `<span style="overflow-y:scroll; max-height:25rem; display:inline-block;">${getGuideDescription(i)}</span>`
 
 
         if (i === "stats") {
@@ -958,6 +975,9 @@ function updateSettings(alt){
 
 
   document.getElementById("settings-theme").value = saved.theme
+  if (saved.language === undefined) saved.language = window.UltraLocale?.getLanguage?.() || "en"
+  if (document.getElementById("settings-language")) document.getElementById("settings-language").value = saved.language
+  window.UltraLocale?.applyStaticTranslations?.()
 
   if (saved.hideGotPkmn == "true") {document.getElementById("settings-hide-got").value = "true"} else document.getElementById("settings-hide-got").value = "false"
   if (saved.alternateWildRotation == "true") {document.getElementById("settings-alternate-rotation").value = "true"} else document.getElementById("settings-alternate-rotation").value = "false"

@@ -51,6 +51,7 @@ function closeTooltip() {
 
 
 function openTooltip(){
+    window.UltraLocale?.applyDynamicTranslations?.(document.getElementById("tooltipBackground"))
     voidAnimation("tooltipBackground","tooltipBoxAppear 0.2s 1")
     document.getElementById("tooltipBackground").style.display = "flex"
 }
@@ -137,7 +138,7 @@ function tooltipData(category, ttdata){
         if (listName === "uncommon") { tag = `<span>Uncommon</span>`; }
         div.className = "area-preview";
         if (item.type!=="tm") div.innerHTML = `<img style="scale:2" src="img/items/${item.id}.png">` + tag;
-        if (item.type=="tm") div.innerHTML = `<img style="scale:2" src="img/items/tm${format(move[item.move].type)}.png">` + tag;
+        if (item.type=="tm") div.innerHTML = `<img style="scale:2" src="img/items/tm${formatAsset(move[item.move].type)}.png">` + tag;
         document.getElementById("area-preview-items").appendChild(div);
         }}
 
@@ -207,7 +208,7 @@ function tooltipData(category, ttdata){
         else {div.dataset.pkmn = i.id;}
         div.className = "area-preview";
         if (i.type!=="tm") div.innerHTML = `<img style="scale:2" src="img/${meow}/${i.id}.png">`;
-        if (i.type=="tm") div.innerHTML = `<img style="scale:2" src="img/${meow}/tm${format(move[i.move].type)}.png">` + tag;
+        if (i.type=="tm") div.innerHTML = `<img style="scale:2" src="img/${meow}/tm${formatAsset(move[i.move].type)}.png">` + tag;
         if (meow == `pkmn/sprite`) div.innerHTML = `<img style="scale:1" src="img/${meow}/${i.id}.png">`;
         document.getElementById("area-preview-items").appendChild(div);
         }
@@ -236,7 +237,7 @@ function tooltipData(category, ttdata){
                 } else {
                     div.dataset.item = reward.item;
                     imgPath = itemData.type === "tm" 
-                        ? `items/tm${format(move[itemData.move].type)}` 
+                        ? `items/tm${formatAsset(move[itemData.move].type)}` 
                         : `items/${reward.item}`;
                     scale = 2;
                 }
@@ -325,6 +326,7 @@ function tooltipData(category, ttdata){
         if (ttdata==="lightScreen") document.getElementById("tooltipBottom").innerHTML = `Super-effective damage dealt to your team is reduced to neutral`
         if (ttdata==="safeguard") document.getElementById("tooltipBottom").innerHTML = `Protects your team from status effects and stat reductions`
 
+        document.getElementById("tooltipBottom").innerHTML = window.UltraLocale?.translateText?.(document.getElementById("tooltipBottom").innerHTML) || document.getElementById("tooltipBottom").innerHTML
         
         
         openTooltip()
@@ -867,19 +869,21 @@ frontierArray.sort((a, b) => a.data.tier - b.data.tier);
 
 
     if (category== "ability") {
+        const locale = window.UltraLocale
+        const abilityInfo = locale?.translateText?.(ability[ttdata].info()) || ability[ttdata].info()
         document.getElementById("tooltipTop").style.display = `none`
         document.getElementById("tooltipTitle").innerHTML = format(ttdata)
         document.getElementById("tooltipTitle").style.display = `inline`
         document.getElementById("tooltipBottom").style.display = `inline`
-        document.getElementById("tooltipMid").innerHTML = `Common Ability`
-        if (ability[ttdata].rarity===2) document.getElementById("tooltipMid").innerHTML = `Uncommon Ability`
-        if (ability[ttdata].rarity===3) document.getElementById("tooltipMid").innerHTML = `Rare Ability`
-        document.getElementById("tooltipBottom").innerHTML = ability[ttdata].info()
+        document.getElementById("tooltipMid").innerHTML = locale?.t?.("ability.common", "Common Ability") || "Common Ability"
+        if (ability[ttdata].rarity===2) document.getElementById("tooltipMid").innerHTML = locale?.t?.("ability.uncommon", "Uncommon Ability") || "Uncommon Ability"
+        if (ability[ttdata].rarity===3) document.getElementById("tooltipMid").innerHTML = locale?.t?.("ability.rare", "Rare Ability") || "Rare Ability"
+        document.getElementById("tooltipBottom").innerHTML = abilityInfo
 
 
         document.getElementById("tooltipMid").innerHTML += `<svg onclick="tooltipData('dictionaryAbility', '${ttdata}')" class="move-tooltip-dictionary" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m6.006 11.823l1.123-3.06h.05l1.123 3.06zm6.494 5.496q1.216-.678 2.453-.98t2.547-.3q.9 0 1.618.111t1.267.296q.23.096.423-.029t.192-.394V7.008q0-.173-.096-.308q-.096-.134-.327-.23q-.825-.293-1.501-.4T17.5 5.961q-1.31 0-2.613.386q-1.304.387-2.387 1.16zm-6.78-4.763h2.869l.474 1.306q.05.111.137.17t.204.059q.198 0 .303-.158t.043-.35L7.739 8.24q-.05-.131-.169-.212t-.255-.081h-.323q-.136 0-.254.08t-.169.213l-2.011 5.361q-.062.173.043.33t.303.159q.117 0 .206-.06q.09-.058.14-.175zm6.28 5.9q-.235 0-.432-.059t-.376-.15q-1.09-.595-2.27-.902T6.5 17.04q-.78 0-1.534.13q-.753.131-1.466.42q-.544.217-1.022-.131T2 16.496V6.831q0-.371.195-.689t.547-.442q.887-.383 1.836-.56T6.5 4.962q1.47 0 2.866.423q1.398.423 2.634 1.23q1.237-.807 2.634-1.23t2.866-.423q.973 0 1.922.178q.95.177 1.836.56q.352.125.547.442t.195.689v9.665q0 .614-.516.943q-.517.328-1.1.111q-.693-.27-1.418-.39q-.724-.121-1.466-.121q-1.24 0-2.421.306t-2.271.901q-.18.093-.376.151q-.197.059-.432.059m1.885-9.508q0-.11.076-.222t.18-.168q.763-.346 1.613-.53q.85-.182 1.746-.182q.48 0 .91.053t.886.153q.129.03.224.135q.096.104.096.257q0 .252-.15.366t-.402.052q-.37-.075-.757-.103q-.388-.028-.807-.028q-.804 0-1.573.154q-.77.154-1.46.43q-.257.099-.42-.005t-.162-.362m0 5.423q0-.11.076-.231q.076-.123.18-.178q.725-.346 1.613-.52q.888-.173 1.746-.173q.48 0 .91.053t.886.153q.129.03.224.135q.096.104.096.257q0 .252-.15.366t-.402.052q-.37-.075-.757-.103q-.388-.028-.807-.028q-.784 0-1.544.16q-.76.161-1.45.457q-.258.118-.44-.003t-.181-.397m0-2.692q0-.11.076-.222t.18-.168q.763-.347 1.613-.53q.85-.182 1.746-.182q.48 0 .91.053t.886.153q.129.03.224.134q.096.104.096.258q0 .252-.15.366t-.402.051q-.37-.075-.757-.102q-.388-.028-.807-.028q-.804 0-1.573.154q-.77.153-1.46.43q-.257.098-.42-.005q-.162-.105-.162-.362"/></svg>`
-        if (ability[ttdata].nerf) document.getElementById("tooltipBottom").innerHTML += `<br><font style="opacity:0.7">${ability[ttdata].nerf}</font>`
-        if (document.getElementById("pkmn-editor").style.display == "flex" && pkmn[currentEditedPkmn].hiddenAbility?.id == ttdata ) document.getElementById("tooltipBottom").innerHTML += `<br><br>This is a Hidden Ability. Hidden abilities are unlocked via Ability Capsules or via Training, and they work alongside your regular ability`
+        if (ability[ttdata].nerf) document.getElementById("tooltipBottom").innerHTML += `<br><font style="opacity:0.7">${locale?.translateText?.(ability[ttdata].nerf) || ability[ttdata].nerf}</font>`
+        if (document.getElementById("pkmn-editor").style.display == "flex" && pkmn[currentEditedPkmn].hiddenAbility?.id == ttdata ) document.getElementById("tooltipBottom").innerHTML += `<br><br>${locale?.translateText?.("This is a Hidden Ability. Hidden abilities are unlocked via Ability Capsules or via Training, and they work alongside your regular ability") || "This is a Hidden Ability. Hidden abilities are unlocked via Ability Capsules or via Training, and they work alongside your regular ability"}`
 
         openTooltip()
     }
@@ -908,7 +912,7 @@ frontierArray.sort((a, b) => a.data.tier - b.data.tier);
 
         document.getElementById("tooltipTop").style.display = `inline`
         document.getElementById("tooltipTitle").style.display = `inline`
-        document.getElementById("tooltipTop").innerHTML = `<img src="img/items/tm${format(move[ttdata].type)}.png">`
+        document.getElementById("tooltipTop").innerHTML = `<img src="img/items/tm${formatAsset(move[ttdata].type)}.png">`
         document.getElementById("tooltipTitle").innerHTML = format(ttdata)
         document.getElementById("tooltipMid").style.display = "inline"
 
@@ -920,19 +924,20 @@ frontierArray.sort((a, b) => a.data.tier - b.data.tier);
         const restrictedIcon = `<svg style="color:${returnTypeColor(move[ttdata].type)}; margin: -0.3rem 0rem" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12.832 21.801c3.126-.626 7.168-2.875 7.168-8.69c0-5.291-3.873-8.815-6.658-10.434c-.619-.36-1.342.113-1.342.828v1.828c0 1.442-.606 4.074-2.29 5.169c-.86.559-1.79-.278-1.894-1.298l-.086-.838c-.1-.974-1.092-1.565-1.87-.971C4.461 8.46 3 10.33 3 13.11C3 20.221 8.289 22 10.933 22q.232 0 .484-.015c.446-.056 0 .099 1.415-.185" opacity="0.5"/><path fill="currentColor" d="M8 18.444c0 2.62 2.111 3.43 3.417 3.542c.446-.056 0 .099 1.415-.185C13.871 21.434 15 20.492 15 18.444c0-1.297-.819-2.098-1.46-2.473c-.196-.115-.424.03-.441.256c-.056.718-.746 1.29-1.215.744c-.415-.482-.59-1.187-.59-1.638v-.59c0-.354-.357-.59-.663-.408C9.495 15.008 8 16.395 8 18.445"/></svg>`
 
 
+        const locale = window.UltraLocale
         let affectedText = ""
-        if (affectedAbilities.length>0) affectedText =`<br>Affected by ${joinWithAnd(affectedAbilities)}`
-        if (move[ttdata].restricted) affectedText +=`<br>This move is restricted (${restrictedIcon}) and only one of them can be present in the active moves at a time`
+        if (affectedAbilities.length>0) affectedText =`<br>${locale?.t?.("move.affectedBy", "Affected by") || "Affected by"} ${joinWithAnd(affectedAbilities)}`
+        if (move[ttdata].restricted) affectedText +=`<br>${locale?.t?.("move.restricted", "This move is restricted and only one of them can be present in the active moves at a time") || "This move is restricted and only one of them can be present in the active moves at a time"} (${restrictedIcon})`
 
 
-        document.getElementById("tooltipMid").innerHTML = `${format(move[ttdata].type)}, ${move[ttdata].power} Power, ${format(move[ttdata].split)}${affectedText}`
-        if (move[ttdata].info == undefined) document.getElementById("tooltipBottom").innerHTML = `No additional effects`
-        else document.getElementById("tooltipBottom").innerHTML = move[ttdata].info()
+        document.getElementById("tooltipMid").innerHTML = `${format(move[ttdata].type)}, ${move[ttdata].power} ${locale?.t?.("move.power", "Power") || "Power"}, ${format(move[ttdata].split)}${affectedText}`
+        if (move[ttdata].info == undefined) document.getElementById("tooltipBottom").innerHTML = locale?.t?.("move.noEffects", "No additional effects") || "No additional effects"
+        else document.getElementById("tooltipBottom").innerHTML = locale?.translateText?.(move[ttdata].info()) || move[ttdata].info()
 
         document.getElementById("tooltipMid").innerHTML += `<svg onclick="tooltipData('dictionaryMove', '${ttdata}')" class="move-tooltip-dictionary" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m6.006 11.823l1.123-3.06h.05l1.123 3.06zm6.494 5.496q1.216-.678 2.453-.98t2.547-.3q.9 0 1.618.111t1.267.296q.23.096.423-.029t.192-.394V7.008q0-.173-.096-.308q-.096-.134-.327-.23q-.825-.293-1.501-.4T17.5 5.961q-1.31 0-2.613.386q-1.304.387-2.387 1.16zm-6.78-4.763h2.869l.474 1.306q.05.111.137.17t.204.059q.198 0 .303-.158t.043-.35L7.739 8.24q-.05-.131-.169-.212t-.255-.081h-.323q-.136 0-.254.08t-.169.213l-2.011 5.361q-.062.173.043.33t.303.159q.117 0 .206-.06q.09-.058.14-.175zm6.28 5.9q-.235 0-.432-.059t-.376-.15q-1.09-.595-2.27-.902T6.5 17.04q-.78 0-1.534.13q-.753.131-1.466.42q-.544.217-1.022-.131T2 16.496V6.831q0-.371.195-.689t.547-.442q.887-.383 1.836-.56T6.5 4.962q1.47 0 2.866.423q1.398.423 2.634 1.23q1.237-.807 2.634-1.23t2.866-.423q.973 0 1.922.178q.95.177 1.836.56q.352.125.547.442t.195.689v9.665q0 .614-.516.943q-.517.328-1.1.111q-.693-.27-1.418-.39q-.724-.121-1.466-.121q-1.24 0-2.421.306t-2.271.901q-.18.093-.376.151q-.197.059-.432.059m1.885-9.508q0-.11.076-.222t.18-.168q.763-.346 1.613-.53q.85-.182 1.746-.182q.48 0 .91.053t.886.153q.129.03.224.135q.096.104.096.257q0 .252-.15.366t-.402.052q-.37-.075-.757-.103q-.388-.028-.807-.028q-.804 0-1.573.154q-.77.154-1.46.43q-.257.099-.42-.005t-.162-.362m0 5.423q0-.11.076-.231q.076-.123.18-.178q.725-.346 1.613-.52q.888-.173 1.746-.173q.48 0 .91.053t.886.153q.129.03.224.135q.096.104.096.257q0 .252-.15.366t-.402.052q-.37-.075-.757-.103q-.388-.028-.807-.028q-.784 0-1.544.16q-.76.161-1.45.457q-.258.118-.44-.003t-.181-.397m0-2.692q0-.11.076-.222t.18-.168q.763-.347 1.613-.53q.85-.182 1.746-.182q.48 0 .91.053t.886.153q.129.03.224.134q.096.104.096.258q0 .252-.15.366t-.402.051q-.37-.075-.757-.102q-.388-.028-.807-.028q-.804 0-1.573.154q-.77.153-1.46.43q-.257.098-.42-.005q-.162-.105-.162-.362"/></svg>`
 
-        if (document.getElementById("pkmn-editor").style.display == "flex" && pkmn[currentEditedPkmn].signature?.id == ttdata ) document.getElementById("tooltipBottom").innerHTML += `<br><br>This is a Signature Move. Signature moves will automatically be learnt at level 100`
-        if (document.getElementById("pkmn-editor").style.display == "flex" && pkmn[currentEditedPkmn].eggMove?.id == ttdata ) document.getElementById("tooltipBottom").innerHTML += `<br><br>This is an Egg Move. Egg moves can be learnt with genetics when using this Pokemon as a host, using a sample that knows said egg move (usually in the form of Signature moves), at regular move transfer odds`
+        if (document.getElementById("pkmn-editor").style.display == "flex" && pkmn[currentEditedPkmn].signature?.id == ttdata ) document.getElementById("tooltipBottom").innerHTML += `<br><br>${locale?.t?.("move.signatureNote", "This is a Signature Move. Signature moves will automatically be learnt at level 100") || "This is a Signature Move. Signature moves will automatically be learnt at level 100"}`
+        if (document.getElementById("pkmn-editor").style.display == "flex" && pkmn[currentEditedPkmn].eggMove?.id == ttdata ) document.getElementById("tooltipBottom").innerHTML += `<br><br>${locale?.t?.("move.eggNote", "This is an Egg Move. Egg moves can be learnt with genetics when using this Pokemon as a host, using a sample that knows said egg move (usually in the form of Signature moves), at regular move transfer odds") || "This is an Egg Move. Egg moves can be learnt with genetics when using this Pokemon as a host, using a sample that knows said egg move (usually in the form of Signature moves), at regular move transfer odds"}`
 
 
 
@@ -943,7 +948,7 @@ frontierArray.sort((a, b) => a.data.tier - b.data.tier);
     if (category=="item") {
 
         document.getElementById("tooltipTop").style.display = "flex"
-        if (item[ttdata].type == "tm") document.getElementById("tooltipTop").innerHTML = `<img src="img/items/tm${format(move[item[ttdata].move].type)}.png">`
+        if (item[ttdata].type == "tm") document.getElementById("tooltipTop").innerHTML = `<img src="img/items/tm${formatAsset(move[item[ttdata].move].type)}.png">`
         else if (item[ttdata].type == "memory") document.getElementById("tooltipTop").innerHTML = `<img src="img/items/${item[ttdata].image}Memory.png">`
         else if (item[ttdata].type == "decor") document.getElementById("tooltipTop").innerHTML = `<img src="img/decor/${ttdata}.png" style="scale:2">`
         else  document.getElementById("tooltipTop").innerHTML = `<img src="img/items/${ttdata}.png">`
@@ -1605,12 +1610,14 @@ const sortedMovepool = movepool
     if (category == "dictionaryAbility") {
 
         document.getElementById("tooltipTop").style.display = `none`
+        const locale = window.UltraLocale
+        const abilityInfo = locale?.translateText?.(ability[ttdata].info()) || ability[ttdata].info()
         document.getElementById("tooltipTitle").innerHTML = format(ttdata)
-        document.getElementById("tooltipMid").innerHTML = `Common Ability<br>${ability[ttdata].info()}`
-        if (ability[ttdata].rarity===2) document.getElementById("tooltipMid").innerHTML = `Uncommon Ability<br>${ability[ttdata].info()}`
-        if (ability[ttdata].rarity===3) document.getElementById("tooltipMid").innerHTML = `Rare Ability<br>${ability[ttdata].info()}`
+        document.getElementById("tooltipMid").innerHTML = `${locale?.t?.("ability.common", "Common Ability") || "Common Ability"}<br>${abilityInfo}`
+        if (ability[ttdata].rarity===2) document.getElementById("tooltipMid").innerHTML = `${locale?.t?.("ability.uncommon", "Uncommon Ability") || "Uncommon Ability"}<br>${abilityInfo}`
+        if (ability[ttdata].rarity===3) document.getElementById("tooltipMid").innerHTML = `${locale?.t?.("ability.rare", "Rare Ability") || "Rare Ability"}<br>${abilityInfo}`
         
-        if (ability[ttdata].nerf) document.getElementById("tooltipMid").innerHTML += `<br><font style="opacity:0.7">${ability[ttdata].nerf}</font>`
+        if (ability[ttdata].nerf) document.getElementById("tooltipMid").innerHTML += `<br><font style="opacity:0.7">${locale?.translateText?.(ability[ttdata].nerf) || ability[ttdata].nerf}</font>`
 
 
         if (ability[ttdata].type){
@@ -1620,11 +1627,11 @@ const sortedMovepool = movepool
         for (const e in pkmn){
             if (pkmn[e].hiddenAbility?.id == ttdata) signatureArray.push(e)
         }
-        if (signatureArray.length>0) signatureText = `<br><br>Additionally, appears as the Hidden ability of ${joinWithAnd(signatureArray)}`
+        if (signatureArray.length>0) signatureText = `<br><br>${(locale?.t?.("dictionary.hiddenAbilityOf", "Additionally, appears as the Hidden Ability of {pokemon}") || "Additionally, appears as the Hidden Ability of {pokemon}").replace("{pokemon}", joinWithAnd(signatureArray))}`
         
 
         document.getElementById("tooltipBottom").innerHTML = `
-        Learnable by ${joinWithAnd(ability[ttdata].type)} types ${signatureText}
+        ${(locale?.t?.("dictionary.learnableByTypes", "Learnable by {types} types {rarity}") || "Learnable by {types} types {rarity}").replace("{types}", joinWithAnd(ability[ttdata].type.map(type => format(type)))).replace("{rarity}", "")} ${signatureText}
         `
         } else {
 
@@ -1635,11 +1642,11 @@ const sortedMovepool = movepool
 
         if (signatureArray.length>0) {
         document.getElementById("tooltipBottom").innerHTML = `
-        This ability can only appear as the Hidden Ability of ${joinWithAnd(signatureArray)}
+        ${(locale?.t?.("dictionary.abilityOnlyHidden", "This ability can only appear as the Hidden Ability of {pokemon}") || "This ability can only appear as the Hidden Ability of {pokemon}").replace("{pokemon}", joinWithAnd(signatureArray))}
         `
         } else{
         document.getElementById("tooltipBottom").innerHTML = `
-        This ability is currently unobtainable :(
+        ${locale?.t?.("dictionary.abilityUnobtainable", "This ability is currently unobtainable :(") || "This ability is currently unobtainable :("}
         ` 
         }
 
@@ -1658,7 +1665,7 @@ const sortedMovepool = movepool
 
         document.getElementById("tooltipTop").style.display = `inline`
         document.getElementById("tooltipTitle").style.display = `inline`
-        document.getElementById("tooltipTop").innerHTML = `<img src="img/items/tm${format(move[ttdata].type)}.png">`
+        document.getElementById("tooltipTop").innerHTML = `<img src="img/items/tm${formatAsset(move[ttdata].type)}.png">`
         document.getElementById("tooltipTitle").innerHTML = format(ttdata)
         document.getElementById("tooltipMid").style.display = "inline"
 
@@ -1668,12 +1675,13 @@ const sortedMovepool = movepool
         affectedAbilities.push(...move[ttdata].affectedBy)
         }
             
+        const locale = window.UltraLocale
         let affectedText = ""
-        if (affectedAbilities.length>0) affectedText =`<br>Affected by ${joinWithAnd(affectedAbilities)}`
+        if (affectedAbilities.length>0) affectedText =`<br>${locale?.t?.("move.affectedBy", "Affected by") || "Affected by"} ${joinWithAnd(affectedAbilities)}`
 
 
-        document.getElementById("tooltipMid").innerHTML = `${move[ttdata].power} Power, ${format(move[ttdata].split)}${affectedText}`
-        if (move[ttdata].info != undefined) document.getElementById("tooltipMid").innerHTML += `<br>${move[ttdata].info()}`
+        document.getElementById("tooltipMid").innerHTML = `${move[ttdata].power} ${locale?.t?.("move.power", "Power") || "Power"}, ${format(move[ttdata].split)}${affectedText}`
+        if (move[ttdata].info != undefined) document.getElementById("tooltipMid").innerHTML += `<br>${locale?.translateText?.(move[ttdata].info()) || move[ttdata].info()}`
         
         
         let eggMoveUsers = []
@@ -1684,12 +1692,12 @@ const sortedMovepool = movepool
         
         if (move[ttdata].moveset) {
 
-        let rarity = `(Common)`
-        if (move[ttdata].rarity == 2) rarity = `(Uncommon)`
-        if (move[ttdata].rarity == 3) rarity = `(Rare)`
+        let rarity = locale?.t?.("dictionary.common", "(Common)") || "(Common)"
+        if (move[ttdata].rarity == 2) rarity = locale?.t?.("dictionary.uncommon", "(Uncommon)") || "(Uncommon)"
+        if (move[ttdata].rarity == 3) rarity = locale?.t?.("dictionary.rare", "(Rare)") || "(Rare)"
 
         document.getElementById("tooltipBottom").innerHTML = `
-        Learnable by ${joinWithAnd(move[ttdata].moveset)} types ${rarity}
+        ${(locale?.t?.("dictionary.learnableByTypes", "Learnable by {types} types {rarity}") || "Learnable by {types} types {rarity}").replace("{types}", joinWithAnd(move[ttdata].moveset.map(type => format(type)))).replace("{rarity}", rarity)}
         `
         } else{
 
@@ -1701,10 +1709,10 @@ const sortedMovepool = movepool
 
 
         document.getElementById("tooltipBottom").innerHTML = `
-        This move can only appear as the Signature Move of ${joinWithAnd(signatureArray)}
+        ${(locale?.t?.("dictionary.moveSignatureOnly", "This move can only appear as the Signature Move of {pokemon}") || "This move can only appear as the Signature Move of {pokemon}").replace("{pokemon}", joinWithAnd(signatureArray))}
         `
         if (eggMoveUsers.length>0) document.getElementById("tooltipBottom").innerHTML += `
-        and the Egg Move of ${joinWithAnd(eggMoveUsers)}
+        ${(locale?.t?.("dictionary.moveEggOf", "and the Egg Move of {pokemon}") || "and the Egg Move of {pokemon}").replace("{pokemon}", joinWithAnd(eggMoveUsers))}
         `
 
         }
@@ -1815,7 +1823,7 @@ const sortedMovepool = movepool
         document.getElementById("tooltipTitle").innerHTML = format(ttdata)
         document.getElementById("tooltipMid").style.display = "inline"
 
-        if (item[ttdata].type == "tm") document.getElementById("tooltipTop").innerHTML = `<img src="img/items/tm${format(move[item[ttdata].move].type)}.png">`
+        if (item[ttdata].type == "tm") document.getElementById("tooltipTop").innerHTML = `<img src="img/items/tm${formatAsset(move[item[ttdata].move].type)}.png">`
         else if (item[ttdata].type == "memory") document.getElementById("tooltipTop").innerHTML = `<img src="img/items/${item[ttdata].image}Memory.png">`
         else if (item[ttdata].type == "decor") document.getElementById("tooltipTop").innerHTML = `<img src="img/decor/${ttdata}.png" style="scale:2">`
         else  document.getElementById("tooltipTop").innerHTML = `<img src="img/items/${ttdata}.png">`

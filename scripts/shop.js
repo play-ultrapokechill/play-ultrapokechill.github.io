@@ -1823,7 +1823,7 @@ function updateItemShop(){
     const shopItem = shop[i].icon
 
     if (item[shopItem] && item[shopItem].type=="tm"){ div.innerHTML = `
-    <img src="img/items/tm${format(move[item[shopItem].move].type)}.png">
+    <img src="img/items/tm${formatAsset(move[item[shopItem].move].type)}.png">
         <span>${name}${stockTag}</span>
     <strong id="shop-currency-${i}">
         <img src="img/items/${currency}.png">
