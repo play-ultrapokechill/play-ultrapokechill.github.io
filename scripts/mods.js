@@ -2,6 +2,7 @@
   const registry = {};
   const folderModIds = new Set();
   const linkedModsStorageKey = "ultraPokechill.linkedMods";
+  const workshopUpdateResultKey = "ultraPokechill.workshopUpdateResults";
   const workshopIndexPath = "mods/workshop.json";
   let bundledModsLoaded = false;
   let bundledModsLoading;
@@ -13,6 +14,7 @@
   let workshopMods = [];
   let workshopLastError = "";
   let activeModsTab = "installed";
+  let workshopUpdateNoticeOpen = false;
 
   function readLinkedMods() {
     if (typeof localStorage === "undefined") return undefined;
@@ -878,6 +880,17 @@
     };
   }
 
+  function getInstalledWorkshopVersion(installed) {
+    return cleanText(installed?.imported?.manifest?.version || installed?.mod?.version, "");
+  }
+
+  function getWorkshopUpdates() {
+    hydrateImportedMods();
+    return workshopMods
+      .map(entry => ({ entry, installed: getWorkshopInstall(entry) }))
+      .filter(item => hasWorkshopUpdate(item.installed, item.entry));
+  }
+
   function renderWorkshop() {
     const list = document.getElementById("mods-workshop-list");
     if (!list) return;
@@ -991,7 +1004,7 @@
 
   function hasWorkshopUpdate(installed, entry) {
     if (!installed?.imported || !entry?.version) return false;
-    const currentVersion = cleanText(installed.imported?.manifest?.version || installed.mod?.version, "");
+    const currentVersion = getInstalledWorkshopVersion(installed);
     return currentVersion !== "" && currentVersion !== entry.version;
   }
 
@@ -1014,7 +1027,7 @@
     window.setTimeout(() => window.location.reload(), 250);
   }
 
-  async function updateAllWorkshopMods() {
+  async function updateAllWorkshopMods(options = {}) {
     ensureSave();
     setStatus("Checking workshop updates...");
     await loadWorkshop(true);
@@ -1024,9 +1037,7 @@
     }
     hydrateImportedMods(true);
 
-    const updates = workshopMods
-      .map(entry => ({ entry, installed: getWorkshopInstall(entry) }))
-      .filter(item => hasWorkshopUpdate(item.installed, item.entry));
+    const updates = getWorkshopUpdates();
 
     if (updates.length === 0) {
       renderList();
@@ -1036,13 +1047,25 @@
     }
 
     let updated = 0;
+    const updatedMods = [];
     for (let index = 0; index < updates.length; index++) {
       const item = updates[index];
+      const previousVersion = getInstalledWorkshopVersion(item.installed);
       setStatus(`Updating ${item.entry.name} (${index + 1}/${updates.length})...`);
-      if (await installWorkshopMod(item.entry, { force: true })) updated++;
+      if (typeof options.onProgress === "function") options.onProgress(item, index, updates.length);
+      if (await installWorkshopMod(item.entry, { force: true })) {
+        updated++;
+        updatedMods.push({
+          id: item.entry.id,
+          name: item.entry.name,
+          from: previousVersion || "unknown",
+          to: item.entry.version
+        });
+      }
     }
 
     if (updated > 0) {
+      writeWorkshopUpdateResults(updatedMods);
       setStatus(`Updated ${updated} mod${updated === 1 ? "" : "s"}. Reloading...`);
       if (typeof saveGame === "function") saveGame();
       window.setTimeout(() => window.location.reload(), 350);
@@ -1052,6 +1075,172 @@
     renderList();
     renderWorkshop();
     setStatus("No mods could be updated. Check the console or try again.");
+  }
+
+  function writeWorkshopUpdateResults(updatedMods) {
+    if (typeof localStorage === "undefined" || !Array.isArray(updatedMods) || updatedMods.length === 0) return;
+    try {
+      localStorage.setItem(workshopUpdateResultKey, JSON.stringify({
+        updatedAt: Date.now(),
+        mods: updatedMods
+      }));
+    } catch (error) {
+      console.warn("[UltraMods] Workshop update results could not be saved", error);
+    }
+  }
+
+  function readWorkshopUpdateResults() {
+    if (typeof localStorage === "undefined") return undefined;
+    try {
+      const raw = localStorage.getItem(workshopUpdateResultKey);
+      if (!raw) return undefined;
+      localStorage.removeItem(workshopUpdateResultKey);
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed?.mods) || parsed.mods.length === 0) return undefined;
+      return parsed.mods;
+    } catch (error) {
+      console.warn("[UltraMods] Workshop update results could not be read", error);
+      return undefined;
+    }
+  }
+
+  function ensureWorkshopUpdateNotice() {
+    let overlay = document.getElementById("mods-update-notice");
+    if (overlay) return overlay;
+
+    overlay = document.createElement("div");
+    overlay.id = "mods-update-notice";
+    overlay.innerHTML = `
+      <div id="mods-update-notice-window" role="dialog" aria-modal="true" aria-labelledby="mods-update-notice-title">
+        <div id="mods-update-notice-header">
+          <span id="mods-update-notice-title">Mod updates</span>
+          <button type="button" id="mods-update-notice-close" aria-label="Dismiss">X</button>
+        </div>
+        <div id="mods-update-notice-body"></div>
+        <div id="mods-update-notice-actions"></div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+    overlay.addEventListener("click", event => {
+      if (event.target === overlay) closeWorkshopUpdateNotice();
+    });
+    document.getElementById("mods-update-notice-close").addEventListener("click", closeWorkshopUpdateNotice);
+    return overlay;
+  }
+
+  function closeWorkshopUpdateNotice() {
+    const overlay = document.getElementById("mods-update-notice");
+    if (overlay) overlay.style.display = "none";
+    workshopUpdateNoticeOpen = false;
+  }
+
+  function openWorkshopFromNotice() {
+    closeWorkshopUpdateNotice();
+    openMenu();
+    switchModsTab("workshop");
+  }
+
+  function renderWorkshopUpdateNotice({ title, description, mods, showUpdateAll }) {
+    const overlay = ensureWorkshopUpdateNotice();
+    const titleElement = document.getElementById("mods-update-notice-title");
+    const body = document.getElementById("mods-update-notice-body");
+    const actions = document.getElementById("mods-update-notice-actions");
+
+    titleElement.textContent = title;
+    body.innerHTML = "";
+    actions.innerHTML = "";
+
+    const text = document.createElement("p");
+    text.textContent = description;
+    body.appendChild(text);
+
+    if (Array.isArray(mods) && mods.length > 0) {
+      const list = document.createElement("div");
+      list.className = "mods-update-notice-list";
+      for (const mod of mods) {
+        const row = document.createElement("div");
+        row.className = "mods-update-notice-row";
+
+        const name = document.createElement("strong");
+        name.textContent = mod.name;
+
+        const version = document.createElement("span");
+        version.textContent = `${mod.from} -> ${mod.to}`;
+
+        row.append(name, version);
+        list.appendChild(row);
+      }
+      body.appendChild(list);
+    }
+
+    const dismiss = document.createElement("button");
+    dismiss.type = "button";
+    dismiss.className = "mods-update-notice-secondary";
+    dismiss.textContent = "Dismiss";
+    dismiss.addEventListener("click", closeWorkshopUpdateNotice);
+    actions.appendChild(dismiss);
+
+    const openWorkshop = document.createElement("button");
+    openWorkshop.type = "button";
+    openWorkshop.className = "mods-update-notice-secondary";
+    openWorkshop.textContent = "Open Workshop";
+    openWorkshop.addEventListener("click", openWorkshopFromNotice);
+    actions.appendChild(openWorkshop);
+
+    if (showUpdateAll) {
+      const updateAll = document.createElement("button");
+      updateAll.type = "button";
+      updateAll.className = "mods-update-notice-primary";
+      updateAll.textContent = "Update all";
+      updateAll.addEventListener("click", async () => {
+        updateAll.disabled = true;
+        updateAll.textContent = "Updating...";
+        await updateAllWorkshopMods({
+          onProgress(item, index, total) {
+            updateAll.textContent = `Updating ${index + 1}/${total}`;
+          }
+        });
+        updateAll.disabled = false;
+        updateAll.textContent = "Update all";
+      });
+      actions.appendChild(updateAll);
+    }
+
+    overlay.style.display = "flex";
+    workshopUpdateNoticeOpen = true;
+  }
+
+  async function showWorkshopUpdateNoticeIfNeeded() {
+    const updatedMods = readWorkshopUpdateResults();
+    if (updatedMods?.length > 0) {
+      renderWorkshopUpdateNotice({
+        title: "Mods updated",
+        description: "These workshop mods were updated successfully:",
+        mods: updatedMods,
+        showUpdateAll: false
+      });
+      return;
+    }
+
+    ensureSave();
+    await loadWorkshop(true);
+    if (workshopLastError || workshopUpdateNoticeOpen) return;
+
+    const updates = getWorkshopUpdates().map(item => ({
+      name: item.entry.name,
+      from: getInstalledWorkshopVersion(item.installed),
+      to: item.entry.version
+    }));
+
+    if (updates.length === 0) return;
+
+    renderWorkshopUpdateNotice({
+      title: "Workshop updates available",
+      description: `${updates.length} installed workshop mod${updates.length === 1 ? " has" : "s have"} updates available.`,
+      mods: updates,
+      showUpdateAll: true
+    });
   }
 
   async function installWorkshopMod(entry, options = {}) {
@@ -1299,6 +1488,7 @@
     loadBundledMods().then(() => {
       hydrateImportedMods();
       runHook("onRefresh", {});
+      window.setTimeout(showWorkshopUpdateNoticeIfNeeded, 700);
     });
   });
 })();
