@@ -616,6 +616,7 @@
         <div id="mods-tabs" role="tablist" aria-label="Mods sections">
           <button type="button" class="active" data-mods-tab="installed">Installed</button>
           <button type="button" data-mods-tab="workshop">Workshop</button>
+          <button type="button" id="mods-update-all">Update all</button>
         </div>
         <div id="mods-status" aria-live="polite"></div>
         <div id="mods-installed-panel" class="mods-panel">
@@ -646,6 +647,11 @@
     document.getElementById("mods-close").addEventListener("click", closeMenu);
     document.querySelectorAll("[data-mods-tab]").forEach(button => {
       button.addEventListener("click", () => switchModsTab(button.dataset.modsTab));
+    });
+    document.getElementById("mods-update-all").addEventListener("click", async event => {
+      event.currentTarget.disabled = true;
+      await updateAllWorkshopMods();
+      event.currentTarget.disabled = false;
     });
     document.getElementById("mods-workshop-refresh").addEventListener("click", () => {
       setStatus("Refreshing workshop...");
@@ -1006,6 +1012,46 @@
     setStatus("Mod updated. Reloading...");
     if (typeof saveGame === "function") saveGame();
     window.setTimeout(() => window.location.reload(), 250);
+  }
+
+  async function updateAllWorkshopMods() {
+    ensureSave();
+    setStatus("Checking workshop updates...");
+    await loadWorkshop(true);
+    if (workshopLastError) {
+      setStatus("Workshop index could not be loaded.");
+      return;
+    }
+    hydrateImportedMods(true);
+
+    const updates = workshopMods
+      .map(entry => ({ entry, installed: getWorkshopInstall(entry) }))
+      .filter(item => hasWorkshopUpdate(item.installed, item.entry));
+
+    if (updates.length === 0) {
+      renderList();
+      renderWorkshop();
+      setStatus("All workshop mods are up to date.");
+      return;
+    }
+
+    let updated = 0;
+    for (let index = 0; index < updates.length; index++) {
+      const item = updates[index];
+      setStatus(`Updating ${item.entry.name} (${index + 1}/${updates.length})...`);
+      if (await installWorkshopMod(item.entry, { force: true })) updated++;
+    }
+
+    if (updated > 0) {
+      setStatus(`Updated ${updated} mod${updated === 1 ? "" : "s"}. Reloading...`);
+      if (typeof saveGame === "function") saveGame();
+      window.setTimeout(() => window.location.reload(), 350);
+      return;
+    }
+
+    renderList();
+    renderWorkshop();
+    setStatus("No mods could be updated. Check the console or try again.");
   }
 
   async function installWorkshopMod(entry, options = {}) {

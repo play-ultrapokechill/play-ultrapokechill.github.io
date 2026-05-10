@@ -28,7 +28,7 @@
       "id": "betterMoveSorting",
       "name": "Better Move Sorting",
       "description": "Adds sorting controls and move keywords to a Pokemon's learned move list.",
-      "version": "1.2",
+      "version": "1.3",
       "author": "UltraPokechill",
       "category": "Pokemon UI",
       "file": "workshop/betterMoveSorting.mod",

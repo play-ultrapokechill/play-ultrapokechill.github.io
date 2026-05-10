@@ -3413,6 +3413,12 @@ background:
     color: white;
 }
 
+#mods-update-all{
+    margin-left: auto;
+    background: rgb(90, 133, 113) !important;
+    color: white !important;
+}
+
 .mods-panel[hidden]{
     display: none !important;
 }
@@ -3633,6 +3639,15 @@ background:
         height: 100%;
         max-height: none;
         border-radius: 0;
+    }
+
+    #mods-tabs{
+        flex-wrap: wrap;
+    }
+
+    #mods-update-all{
+        margin-left: 0;
+        width: 100%;
     }
 
     .mod-card{
