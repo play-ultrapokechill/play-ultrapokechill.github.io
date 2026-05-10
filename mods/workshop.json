@@ -78,6 +78,17 @@
       "file": "workshop/bulkCandyUse.mod",
       "image": "img/items/rareCandy.png",
       "tags": ["items", "rare-candy", "quality-of-life"]
+    },
+    {
+      "id": "backupMod",
+      "name": "Backup Mod",
+      "description": "Automatically sends save backups to a Discord webhook every 10 minutes. Check the Backup Mod guide entry before using.",
+      "version": "1.0",
+      "author": "UltraPokechill",
+      "category": "Safety",
+      "file": "workshop/backupMod.mod",
+      "image": "mods/workshop/backupModIcon.png",
+      "tags": ["backup", "discord", "webhook", "save", "safety"]
     }
   ]
 }

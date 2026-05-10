@@ -1,0 +1,10 @@
+{
+  "id": "backupMod",
+  "name": "Backup Mod",
+  "description": "Automatically sends save backups to a Discord webhook every 10 minutes. Check the Backup Mod guide entry before using.",
+  "image": "img/items/upgrade.png",
+  "version": "1.0",
+  "author": "UltraPokechill",
+  "category": "Safety",
+  "defaultEnabled": false
+}
