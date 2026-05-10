@@ -17,8 +17,7 @@ UltraMods.define({
   id: MOD_ID,
   name: "Backup Mod",
   description: "Automatically sends save backups to a Discord webhook every 10 minutes. Check the Backup Mod guide entry before using.",
-  image: "img/items/upgrade.png",
-  version: "1.0",
+  version: "1.1",
   author: "UltraPokechill",
   category: "Safety",
   hooks: {
@@ -293,11 +292,14 @@ async function sendBackup(api, reason) {
     if (!raw) throw new Error("No save data found.");
 
     const timestamp = new Date();
-    const filename = `UltraPokechill-backup-${timestamp.toISOString().replace(/[:.]/g, "-")}.json`;
+    const safeTimestamp = timestamp.toISOString().replace(/[:.]/g, "-");
+    const saveFilename = `UltraPokechill-save-${safeTimestamp}.json`;
+    const backupFilename = `UltraPokechill-backup-${safeTimestamp}.zip`;
+    const zippedSave = createZip(saveFilename, raw);
     const payload = buildDiscordPayload(api, raw, timestamp, reason);
     const form = new FormData();
     form.append("payload_json", JSON.stringify(payload));
-    form.append("files[0]", new Blob([raw], { type: "application/json" }), filename);
+    form.append("files[0]", new Blob([zippedSave], { type: "application/zip" }), backupFilename);
 
     const response = await fetch(webhook, { method: "POST", body: form });
     if (!response.ok) {
@@ -321,7 +323,7 @@ function buildDiscordPayload(api, raw, timestamp, reason) {
   const teamList = getTeamList(api);
   const caught = getCaughtCount(api);
   const summaryFields = [
-    { name: "Reason", value: reason === "manual" ? "Manual backup" : "Automatic 10-minute backup", inline: true },
+    { name: "Reason", value: reason === "manual" ? "Manual backup" : "Automatic backup", inline: true },
     { name: "Save size", value: formatBytes(raw.length), inline: true },
     { name: "Pokemon caught", value: String(caught), inline: true }
   ];
@@ -330,13 +332,20 @@ function buildDiscordPayload(api, raw, timestamp, reason) {
     summaryFields.push({ name: "Current area", value: safeText(api.formatName?.(api.saved.currentArea) || api.saved.currentArea), inline: true });
   }
 
+  summaryFields.push({
+    name: "Current team",
+    value: formatTeamSummary(teamList),
+    inline: false
+  });
+
   const embeds = [{
-    title: "UltraPokechill Save Backup",
-    description: "A save file is attached to this message.",
+    author: { name: "UltraPokechill Backup", icon_url: logoUrl },
+    title: "Save backup ready",
+    description: "Download the attached ZIP to keep a copy of your save. Inside it is the normal JSON save file used by the game.",
     color: 0x5a8571,
     thumbnail: { url: logoUrl },
     fields: summaryFields,
-    footer: { text: "Backup Mod" },
+    footer: { text: "Backup Mod | webhook stored only in this browser", icon_url: logoUrl },
     timestamp: timestamp.toISOString()
   }];
 
@@ -354,12 +363,20 @@ function buildDiscordPayload(api, raw, timestamp, reason) {
   }
 
   return {
-    username: "UltraPokechill Backup",
+    username: "UltraPokechill",
     avatar_url: logoUrl,
-    content: "UltraPokechill save backup",
     allowed_mentions: { parse: [] },
     embeds
   };
+}
+
+function formatTeamSummary(teamList) {
+  if (teamList.length === 0) return "No active team detected.";
+
+  return teamList.slice(0, 6).map(member => {
+    const shinyText = member.shiny ? " | Shiny" : "";
+    return `${member.slot}: ${member.name} | Lv. ${member.level} | HP ${member.hp}${shinyText}`;
+  }).join("\n");
 }
 
 function getTeamList(api) {
@@ -423,7 +440,7 @@ function registerGuide(enabled) {
         <br>3. Open Settings, Mods, Installed, then paste the webhook into the Backup Mod card and click Save webhook.
         <br>4. Click Send backup now once to confirm Discord receives the file.
         <br><br><strong>What gets sent</strong>
-        <br>The mod sends an embed with the UltraPokechill logo, basic save details, your current team icons, and a .json save file attached to the Discord message.
+        <br>The mod sends a clean Discord embed with the UltraPokechill logo, basic save details, your current team icons, and a .zip attachment. Inside the ZIP there is a normal .json save file.
         <br><br><strong>Security note</strong>
         <br>The Discord webhook is stored only in this browser's localStorage under the Backup Mod key. It is not stored inside your game save, so exporting or sharing a save will not include the webhook. Anyone with the webhook URL can post to that Discord channel, so do not share it publicly. Clearing this browser's site data will remove the saved webhook.
       `;
@@ -501,8 +518,75 @@ function formatBytes(bytes) {
   return `${(size / (1024 * 1024)).toFixed(2)} MB`;
 }
 
+function createZip(fileName, text) {
+  const encoder = new TextEncoder();
+  const nameBytes = encoder.encode(fileName);
+  const dataBytes = encoder.encode(text);
+  const crc = crc32(dataBytes);
+  const localHeader = new Uint8Array(30 + nameBytes.length);
+  const centralHeader = new Uint8Array(46 + nameBytes.length);
+  const endRecord = new Uint8Array(22);
+  const local = new DataView(localHeader.buffer);
+  const central = new DataView(centralHeader.buffer);
+  const end = new DataView(endRecord.buffer);
+
+  local.setUint32(0, 0x04034b50, true);
+  local.setUint16(4, 20, true);
+  local.setUint16(6, 0, true);
+  local.setUint16(8, 0, true);
+  local.setUint32(14, crc, true);
+  local.setUint32(18, dataBytes.length, true);
+  local.setUint32(22, dataBytes.length, true);
+  local.setUint16(26, nameBytes.length, true);
+  localHeader.set(nameBytes, 30);
+
+  const centralOffset = localHeader.length + dataBytes.length;
+  central.setUint32(0, 0x02014b50, true);
+  central.setUint16(4, 20, true);
+  central.setUint16(6, 20, true);
+  central.setUint16(8, 0, true);
+  central.setUint16(10, 0, true);
+  central.setUint32(16, crc, true);
+  central.setUint32(20, dataBytes.length, true);
+  central.setUint32(24, dataBytes.length, true);
+  central.setUint16(28, nameBytes.length, true);
+  centralHeader.set(nameBytes, 46);
+
+  end.setUint32(0, 0x06054b50, true);
+  end.setUint16(8, 1, true);
+  end.setUint16(10, 1, true);
+  end.setUint32(12, centralHeader.length, true);
+  end.setUint32(16, centralOffset, true);
+
+  const zip = new Uint8Array(localHeader.length + dataBytes.length + centralHeader.length + endRecord.length);
+  zip.set(localHeader, 0);
+  zip.set(dataBytes, localHeader.length);
+  zip.set(centralHeader, centralOffset);
+  zip.set(endRecord, centralOffset + centralHeader.length);
+  return zip;
+}
+
+function crc32(bytes) {
+  let crc = 0xffffffff;
+  for (let index = 0; index < bytes.length; index++) {
+    crc ^= bytes[index];
+    for (let bit = 0; bit < 8; bit++) {
+      crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1));
+    }
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
 function absoluteUrl(path) {
-  try { return new URL(path, window.location.href).href; } catch (error) { return path; }
+  try {
+    if (/^https?:\/\//.test(path)) return path;
+    const host = window.location.hostname;
+    const localHost = !host || host === "localhost" || host === "127.0.0.1" || host === "0.0.0.0";
+    const base = localHost ? "https://play-ultrapokechill.github.io/" : window.location.href;
+    return new URL(path, base).href;
+  } catch (error) {
+    return path;
+  }
 }
 
 function safeText(value) {

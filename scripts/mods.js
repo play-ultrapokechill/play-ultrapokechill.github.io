@@ -733,7 +733,7 @@
 
       const image = document.createElement("img");
       image.className = "mod-card-image";
-      image.src = mod.image;
+      setModCardImage(image, mod.image);
       image.alt = "";
 
       const body = document.createElement("div");
@@ -892,7 +892,7 @@
 
       const image = document.createElement("img");
       image.className = "mod-card-image";
-      image.src = entry.image;
+      setModCardImage(image, entry.image);
       image.alt = "";
 
       const body = document.createElement("div");
@@ -923,12 +923,25 @@
 
       const installed = getWorkshopInstall(entry);
       if (installed.imported || installed.mod) {
-        const installedButton = document.createElement("button");
-        installedButton.type = "button";
-        installedButton.className = "mod-secondary";
-        installedButton.textContent = "Installed";
-        installedButton.disabled = true;
-        actions.appendChild(installedButton);
+        if (hasWorkshopUpdate(installed, entry)) {
+          const update = document.createElement("button");
+          update.type = "button";
+          update.className = "mod-install";
+          update.textContent = "Update";
+          update.addEventListener("click", async () => {
+            update.disabled = true;
+            await installWorkshopMod(entry, { force: true });
+            renderWorkshop();
+          });
+          actions.appendChild(update);
+        } else {
+          const installedButton = document.createElement("button");
+          installedButton.type = "button";
+          installedButton.className = "mod-secondary";
+          installedButton.textContent = "Installed";
+          installedButton.disabled = true;
+          actions.appendChild(installedButton);
+        }
 
         if (installed.id && registry[installed.id]) {
           const toggle = document.createElement("button");
@@ -956,7 +969,21 @@
     }
   }
 
-  async function installWorkshopMod(entry) {
+  function hasWorkshopUpdate(installed, entry) {
+    if (!installed?.imported || !entry?.version) return false;
+    const currentVersion = cleanText(installed.imported?.manifest?.version || installed.mod?.version, "");
+    return currentVersion !== "" && currentVersion !== entry.version;
+  }
+
+  function setModCardImage(image, source) {
+    image.onerror = () => {
+      image.onerror = null;
+      image.src = "img/icons/logo.png";
+    };
+    image.src = source || "img/icons/logo.png";
+  }
+
+  async function installWorkshopMod(entry, options = {}) {
     ensureSave();
     entry = entry?.sourceUrl ? entry : normalizeWorkshopEntry(entry, 0);
 
@@ -966,13 +993,13 @@
     }
 
     const installed = getWorkshopInstall(entry);
-    if (installed.imported || installed.mod) {
+    if (!options.force && (installed.imported || installed.mod)) {
       setStatus(`${entry.name} is already installed.`);
       return;
     }
 
     try {
-      setStatus(`Downloading ${entry.name}...`);
+      setStatus(`${options.force ? "Updating" : "Downloading"} ${entry.name}...`);
       const response = await fetch(entry.sourceUrl, { cache: "no-store" });
       if (!response.ok) throw new Error(`${entry.sourceUrl} could not be downloaded`);
 
