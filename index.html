@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UltraPokechill</title>
     <link rel="icon" type="image/x-icon" href="/img/icons/logo.png">
-    <link rel="stylesheet" href="styles.css?v=workshop-20260509">
+    <link rel="stylesheet" href="styles.css?v=translation-notice-layout-20260509">
 
 
 
@@ -471,12 +471,12 @@
             <div onclick="textData()"><span data-i18n="settings.text">Data to Text</span></div>
             <div onclick="window.UltraMods?.openMenu?.()"><span data-i18n="settings.mods">Mods</span></div>
 
-            <div style="align-items: flex-start; gap: 0.35rem;">
+            <div class="settings-language-row">
                 <span><span data-i18n="language.label">Language</span>: <select id="settings-language">
                     <option value="en" data-i18n="language.english">English</option>
                     <option value="pt" data-i18n="language.portuguese">Portuguese</option>
                 </select></span>
-                <small data-i18n="language.notice" style="display: block; max-width: 28rem; opacity: 0.68; line-height: 1.2; font-size: 0.82rem;">Portuguese translation is not 100% complete yet.</small>
+                <small class="settings-language-notice" data-i18n="language.notice">Portuguese translation is not 100% complete yet.</small>
             </div>
 
             <div><span data-i18n="settings.theme">Theme</span>: <select id="settings-theme">
