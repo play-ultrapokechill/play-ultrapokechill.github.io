@@ -1,4 +1,6 @@
 let saved = {}
+const GAME_VERSION = 5.01
+const GAME_VERSION_LABEL = "5.0.1"
 
 //--Workarround for IOS not appreciating the press-hold function. It fires a contextmenu at the pointer location
 const isIOS = (() => {
@@ -223,8 +225,12 @@ function updateGameVersion() {
     saved.tagSystemTags = [];
   }
 
-  saved.version = 5.0
-  document.getElementById(`game-version`).innerHTML = `v${saved.version}`
+  if (saved.version<5.01){
+    saved.dimensionSelectedBlueprints = {}
+  }
+
+  saved.version = GAME_VERSION
+  document.getElementById(`game-version`).innerHTML = `v${GAME_VERSION_LABEL}`
 }
 
 

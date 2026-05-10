@@ -6644,6 +6644,10 @@ transform: translateY(-1rem);
     transition: 0.1s;
 }
 
+.dimension-pokemon-selected{
+    filter: drop-shadow(0 0 0.7rem #efe2b5) brightness(1.15);
+}
+
 
 
 .dimension-sprite{

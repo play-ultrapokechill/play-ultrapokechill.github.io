@@ -10249,9 +10249,19 @@ saved.lastDimensionRotation = 1
 function assignMegaDimension(){
 
 
+    saved.dimensionSelectedBlueprints ??= {}
 
     for (const i in areas){
         if (areas[i].type != "dimensionBlueprint") continue
+        if (areas[i].rotation != rotationDimensionCurrent) continue
+
+        if (saved.dimensionSelectedBlueprints[areas[i].tier] == undefined
+        || areas[saved.dimensionSelectedBlueprints[areas[i].tier]] == undefined
+        || areas[saved.dimensionSelectedBlueprints[areas[i].tier]].rotation != rotationDimensionCurrent) {
+            saved.dimensionSelectedBlueprints[areas[i].tier] = i
+        }
+
+        if (saved.dimensionSelectedBlueprints[areas[i].tier] != i) continue
 
         areas[`dimensionRaid`+areas[i].tier].difficulty = areas[i].difficulty
         areas[`dimensionRaid`+areas[i].tier].level = areas[i].level
@@ -10269,7 +10279,7 @@ function assignMegaDimension(){
 
 
     if (saved.lastDimensionRotation == rotationEventCurrent) return
-    if (saved.lastDimensionRotation != rotationEventCurrent) { saved.lastDimensionRotation = rotationEventCurrent }
+    if (saved.lastDimensionRotation != rotationEventCurrent) { saved.lastDimensionRotation = rotationEventCurrent; saved.dimensionSelectedBlueprints = {} }
 
 
     item.megaShard.got = 0
@@ -10324,10 +10334,28 @@ function assignMegaDimension(){
 }
 
 
+function setSelectedDimensionBlueprint(tier, blueprint){
+    if (blueprint == undefined || areas[blueprint] == undefined) return
+    if (areas[blueprint].type != "dimensionBlueprint") return
+    if (areas[blueprint].tier != tier) return
+    if (areas[blueprint].rotation != rotationDimensionCurrent) return
 
-function updateMegaDimension(tier){
+    saved.dimensionSelectedBlueprints ??= {}
+    saved.dimensionSelectedBlueprints[tier] = blueprint
+}
+
+function getSelectedDimensionBlueprint(tier){
+    saved.dimensionSelectedBlueprints ??= {}
+    return saved.dimensionSelectedBlueprints[tier]
+}
 
 
+
+function updateMegaDimension(tier, blueprint){
+
+
+
+    if (tier != undefined && blueprint != undefined) setSelectedDimensionBlueprint(tier, blueprint)
 
     assignMegaDimension()
 
@@ -10399,7 +10427,7 @@ function updateMegaDimension(tier){
 
         div.addEventListener("click", e => { 
 
-            updateMegaDimension(areas[i].tier)
+            updateMegaDimension(areas[i].tier, i)
 
 
 
@@ -10448,6 +10476,7 @@ function updateMegaDimension(tier){
 
 
         div.className = "dimension-pokemon"
+        if (getSelectedDimensionBlueprint(tier) == i) div.classList.add("dimension-pokemon-selected")
 
         let dimensionIndicator = `<div style="filter:hue-rotate(100deg)" id="dimension-indicator">★</div>`
         if (areas[i].tier == 2) dimensionIndicator = `<div style="filter:hue-rotate(0deg)" id="dimension-indicator">★★</div>`
@@ -10477,6 +10506,11 @@ function updateMegaDimension(tier){
             `
 
         document.getElementById("dimension-listing").appendChild(div);
+
+        div.addEventListener("click", e => {
+            if (e.target.closest && e.target.closest(".dimension-info")) return
+            updateMegaDimension(tier, i)
+        })
 
 
         }

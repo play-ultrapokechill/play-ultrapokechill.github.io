@@ -1,0 +1,10 @@
+{
+  "id": "allStarters",
+  "name": "All Starters",
+  "description": "Organizes every main starter option by generation on the Select a Starter screen.",
+  "image": "img/pkmn/sprite/bulbasaur.png",
+  "version": "1.4",
+  "author": "UltraPokechill",
+  "category": "Starter Select",
+  "defaultEnabled": false
+}
