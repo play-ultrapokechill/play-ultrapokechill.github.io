@@ -331,6 +331,6 @@ document.addEventListener("keydown", (ev) => {
 });
 
 function clearData() {
-  localStorage.clear();
+  localStorage.removeItem("gameData");
   window.location.reload();
 }

@@ -523,9 +523,9 @@
             <div onclick="window.open('https://discord.gg/VnukKfSs3S', '_blank')">Discord</div>
 
             <div style="margin-top: 3rem;background: rgb(206, 83, 83); color: white; " onclick='document.getElementById("tooltipTop").style.display = `none`
-        document.getElementById("tooltipTitle").innerHTML = `Are you sure you want to delete all data forever?`
+        document.getElementById("tooltipTitle").innerHTML = `Are you sure you want to reset your save data?`
         document.getElementById("tooltipMid").style.display = `none`
-        document.getElementById("tooltipBottom").innerHTML = `<div onClick = "clearData()" style="cursor:pointer; font-size:2rem" id="prevent-tooltip-exit">Yeah!</div>`
+        document.getElementById("tooltipBottom").innerHTML = `<div onClick = "clearData()" style="cursor:pointer; font-size:2rem" id="prevent-tooltip-exit">Reset save</div>`
         openTooltip()'
             
             ><span data-i18n="settings.wipe">Wipe Data</span></div>
@@ -1749,7 +1749,7 @@
     <script src="scripts/tooltip.js?v=language-deep-audit-4-20260509"></script>
     <script src="scripts/decor.js"></script>
 
-    <script src="scripts/save.js"></script>
+    <script src="scripts/save.js?v=mod-save-reset-20260510"></script>
 </body>
 </html>
 
