@@ -6071,24 +6071,8 @@ areas.dimensionKyuremWhite = {
         slot1: pkmn.kyuremWhite,
         slot1Moves: [move.blueFlare.id, move.iceBeam.id, move.dragonPulse.id, move.thunder.id],
     },
-    reward: [pkmn.kyuremWhite, item.blackApricorn],
+    reward: [pkmn.magikarp, item.blackApricorn],
     fieldEffect: [field.noMercy.id, field.stealthRocks.id, field.wonderWard.id],
-    skills: { 3: skill.ironWill.id, 2: skill.suddenDeath.id, 1: skill.demoralisingRoar.id }
-}
-
-areas.dimensionAshGreninja = {
-    type: `dimensionBlueprint`,
-    icon: pkmn.greninjaAsh,
-    tier: new Number(3),
-    rotation: 1,
-    difficulty: tier4difficulty,
-    level: 100,
-    team: {
-        slot1: pkmn.greninjaAsh,
-        slot1Moves: [move.waterShuriken.id, move.darkPulse.id, move.hydroCannon.id, move.nightSlash.id],
-    },
-    reward: [pkmn.greninjaAsh, item.blackApricorn],
-    fieldEffect: [field.noMercy.id, field.stealthRocks.id, field.waterPledge.id],
     skills: { 3: skill.ironWill.id, 2: skill.suddenDeath.id, 1: skill.demoralisingRoar.id }
 }
 
@@ -6103,7 +6087,7 @@ areas.dimensionMegaRayquaza = {
         slot1: pkmn.megaRayquaza,
         slot1Moves: [move.flareBlitz.id, move.fly.id, move.dracoMeteor.id, move.earthquake.id],
     },
-    reward: [pkmn.megaRayquaza, item.blackApricorn],
+    reward: [pkmn.magikarp, item.blackApricorn],
     fieldEffect: [field.noMercy.id, field.stealthRocks.id, field.ironBody.id, field.wonderWard.id],
     skills: { 3: skill.omniboost.id, 2: skill.suddenDeath.id, 1: skill.demoralisingRoar.id }
 }
