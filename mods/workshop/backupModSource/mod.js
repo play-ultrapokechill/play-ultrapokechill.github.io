@@ -17,7 +17,7 @@ UltraMods.define({
   id: MOD_ID,
   name: "Backup Mod",
   description: "Automatically sends save backups to a Discord webhook every 10 minutes. Check the Backup Mod guide entry before using.",
-  version: "1.1",
+  version: "1.2",
   author: "UltraPokechill",
   category: "Safety",
   hooks: {
@@ -319,7 +319,7 @@ async function sendBackup(api, reason) {
 }
 
 function buildDiscordPayload(api, raw, timestamp, reason) {
-  const logoUrl = absoluteUrl("img/icons/logo.png");
+  const logoUrl = publicAssetUrl("img/icons/logo.png");
   const teamList = getTeamList(api);
   const caught = getCaughtCount(api);
   const summaryFields = [
@@ -580,13 +580,14 @@ function crc32(bytes) {
 function absoluteUrl(path) {
   try {
     if (/^https?:\/\//.test(path)) return path;
-    const host = window.location.hostname;
-    const localHost = !host || host === "localhost" || host === "127.0.0.1" || host === "0.0.0.0";
-    const base = localHost ? "https://play-ultrapokechill.github.io/" : window.location.href;
-    return new URL(path, base).href;
+    return new URL(path, window.location.href).href;
   } catch (error) {
     return path;
   }
+}
+
+function publicAssetUrl(path) {
+  try { return new URL(path, "https://play-ultrapokechill.github.io/").href; } catch (error) { return path; }
 }
 
 function safeText(value) {

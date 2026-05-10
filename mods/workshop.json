@@ -83,7 +83,7 @@
       "id": "backupMod",
       "name": "Backup Mod",
       "description": "Automatically sends clean Discord save backups every 10 minutes. Check the Backup Mod guide entry before using.",
-      "version": "1.1",
+      "version": "1.2",
       "author": "UltraPokechill",
       "category": "Safety",
       "file": "workshop/backupMod.mod",

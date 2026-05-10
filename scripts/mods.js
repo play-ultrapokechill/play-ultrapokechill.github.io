@@ -762,6 +762,20 @@
       const actions = document.createElement("div");
       actions.className = "mod-card-actions";
 
+      const workshopEntry = getInstalledWorkshopEntry(mod);
+      if (workshopEntry && mod.version !== workshopEntry.version) {
+        const update = document.createElement("button");
+        update.type = "button";
+        update.className = "mod-install";
+        update.textContent = "Update";
+        update.addEventListener("click", async () => {
+          update.disabled = true;
+          if (await installWorkshopMod(workshopEntry, { force: true })) reloadAfterWorkshopUpdate();
+          else renderList();
+        });
+        actions.appendChild(update);
+      }
+
       const toggle = document.createElement("button");
       toggle.type = "button";
       toggle.className = isEnabled(mod.id) ? "mod-toggle active" : "mod-toggle";
@@ -930,8 +944,8 @@
           update.textContent = "Update";
           update.addEventListener("click", async () => {
             update.disabled = true;
-            await installWorkshopMod(entry, { force: true });
-            renderWorkshop();
+            if (await installWorkshopMod(entry, { force: true })) reloadAfterWorkshopUpdate();
+            else renderWorkshop();
           });
           actions.appendChild(update);
         } else {
@@ -975,6 +989,11 @@
     return currentVersion !== "" && currentVersion !== entry.version;
   }
 
+  function getInstalledWorkshopEntry(mod) {
+    if (!mod?.workshop || workshopMods.length === 0) return undefined;
+    return workshopMods.find(entry => entry.id === mod.id || entry.sourceUrl === mod.workshopSource);
+  }
+
   function setModCardImage(image, source) {
     image.onerror = () => {
       image.onerror = null;
@@ -983,19 +1002,25 @@
     image.src = source || "img/icons/logo.png";
   }
 
+  function reloadAfterWorkshopUpdate() {
+    setStatus("Mod updated. Reloading...");
+    if (typeof saveGame === "function") saveGame();
+    window.setTimeout(() => window.location.reload(), 250);
+  }
+
   async function installWorkshopMod(entry, options = {}) {
     ensureSave();
     entry = entry?.sourceUrl ? entry : normalizeWorkshopEntry(entry, 0);
 
     if (!entry) {
       setStatus("Workshop entry has no downloadable .mod file.");
-      return;
+      return false;
     }
 
     const installed = getWorkshopInstall(entry);
     if (!options.force && (installed.imported || installed.mod)) {
       setStatus(`${entry.name} is already installed.`);
-      return;
+      return false;
     }
 
     try {
@@ -1013,9 +1038,11 @@
           author: entry.author
         }
       });
+      return true;
     } catch (error) {
       console.warn("[UltraMods] Workshop mod could not be installed", error);
       setStatus(`${entry.name} could not be installed.`);
+      return false;
     }
   }
 
@@ -1032,6 +1059,10 @@
       renderList();
       renderWorkshop();
       if (activeModsTab !== "workshop" || (workshopLoaded && !workshopLastError)) setStatus("");
+      loadWorkshop().then(() => {
+        renderList();
+        renderWorkshop();
+      });
     });
   }
 
