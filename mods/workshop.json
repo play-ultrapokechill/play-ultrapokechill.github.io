@@ -111,6 +111,17 @@
       "file": "workshop/fatigueRemover.mod",
       "image": "img/items/leftovers.png",
       "tags": ["battle", "fatigue", "afk", "quality-of-life"]
+    },
+    {
+      "id": "multiHeartScale",
+      "name": "Multi Heart Scale",
+      "description": "Lets Heart Scale remember multiple moves at once, spending one Heart Scale per selected move.",
+      "version": "1.0",
+      "author": "UltraPokechill",
+      "category": "Items",
+      "file": "workshop/multiHeartScale.mod",
+      "image": "img/items/heartScale.png",
+      "tags": ["items", "heart-scale", "moves", "quality-of-life"]
     }
   ]
 }
