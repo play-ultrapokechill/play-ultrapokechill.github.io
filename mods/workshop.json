@@ -58,7 +58,7 @@
       "tags": ["evolution", "cosmoem", "cosmog", "shop"]
     },
     {
-    "id": "pkrs_filter",
+    "id": "PokerusFilter",
     "name": "Pokerus filter",
     "description": "Adding a filter in the pokedex to find the pokemons that carry the virus faster.",
     "image": "img/items/colburBerry.png",
