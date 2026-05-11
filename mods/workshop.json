@@ -69,6 +69,17 @@
       "tags": ["battle", "team", "rematch", "quality-of-life"]
     },
     {
+      "id": "noMoreMagikarp",
+      "name": "No More Magikarp",
+      "description": "Fixes Mega-Dimension rewards so White Kyurem and M-Rayquaza reward their actual Pokemon instead of Magikarp.",
+      "version": "1.0",
+      "author": "UltraPokechill",
+      "category": "Battle",
+      "file": "workshop/noMoreMagikarp.mod",
+      "image": "mods/workshop/noMoreMagikarpIcon.png",
+      "tags": ["battle", "mega-dimension", "rewards", "quality-of-life"]
+    },
+    {
       "id": "bulkCandyUse",
       "name": "Bulk Candy Use",
       "description": "Adds bulk-use choices for Rare Candy when selecting a Pokemon.",
