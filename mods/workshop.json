@@ -100,6 +100,17 @@
       "file": "workshop/backupMod.mod",
       "image": "mods/workshop/backupModIcon.png",
       "tags": ["backup", "discord", "webhook", "save", "safety"]
+    },
+    {
+      "id": "fatigueRemover",
+      "name": "Fatigue Remover",
+      "description": "Removes Battle Fatigue HP loss completely while enabled.",
+      "version": "1.0",
+      "author": "UltraPokechill",
+      "category": "Battle",
+      "file": "workshop/fatigueRemover.mod",
+      "image": "img/items/leftovers.png",
+      "tags": ["battle", "fatigue", "afk", "quality-of-life"]
     }
   ]
 }
