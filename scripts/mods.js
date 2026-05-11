@@ -286,13 +286,19 @@
     let registeredMod;
     const api = createApi(source);
     api.define = definition => {
-      registeredMod = register({
+      const mergedDefinition = {
         ...baseDefinition,
         ...definition,
         hooks: mergeHooks(baseDefinition.hooks, definition?.hooks),
         source,
         sourceFile: sourceName
-      });
+      };
+      const baseImage = String(baseDefinition.image || "");
+      const definedImage = String(definition?.image || "").trim().toLowerCase();
+      if (baseImage.startsWith("data:image/") && (!definedImage || definedImage === "icon.png")) {
+        mergedDefinition.image = baseDefinition.image;
+      }
+      registeredMod = register(mergedDefinition);
       return registeredMod;
     };
     api.register = api.define;
