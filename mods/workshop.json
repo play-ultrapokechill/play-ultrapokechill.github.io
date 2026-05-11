@@ -58,6 +58,15 @@
       "tags": ["evolution", "cosmoem", "cosmog", "shop"]
     },
     {
+    "id": "pkrs_filter",
+    "name": "Pokerus filter",
+    "description": "Adding a filter in the pokedex to find the pokemons that carry the virus faster.",
+    "image": "img/items/colburBerry.png",
+    "version": "1.0",
+    "author": "LPF",
+    "category": "Pokedex"
+}
+    {
       "id": "editTeamFightAgain",
       "name": "Edit Team and Fight Again",
       "description": "Adds an end-of-battle button that opens team editing before rematching the same battle.",
