@@ -124,10 +124,10 @@
     },
     {
   "id": "shinyForever",
-  "name": "Shiny Forever",
+  "name": "Shiny Family",
   "description": "Makes every unlocked Pokemon in an evolution family shiny once any unlocked member of that family is shiny.",
   "image": "img/items/shinyStone.png",
-  "version": "1.0",
+  "version": "1.1",
   "file": "workshop/shinyFamily.mod",
   "author": "UltraPokechill",
   "category": "Evolution",
