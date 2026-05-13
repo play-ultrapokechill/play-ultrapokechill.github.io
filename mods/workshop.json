@@ -47,17 +47,6 @@
       "tags": ["evolution", "shiny", "quality-of-life"]
     },
     {
-      "id": "shinyForever",
-      "name": "Shiny Family",
-      "description": "Makes every unlocked Pokemon in an evolution family shiny once any unlocked member of that family is shiny.",
-      "version": "1.0",
-      "author": "UltraPokechill",
-      "category": "Evolution",
-      "file": "workshop/shinyForever.mod",
-      "image": "img/items/shinyStone.png",
-      "tags": ["evolution", "shiny", "family", "quality-of-life"]
-    },
-    {
       "id": "cosmoemEvolves",
       "name": "Cosmoem Evolves",
       "description": "Adds Cosmog Candy to the shop to evolve Cosmoem into Solgaleo during the day or Lunala during the night.",
@@ -82,7 +71,7 @@
       "id": "editTeamFightAgain",
       "name": "Edit Team and Fight Again",
       "description": "Adds an end-of-battle button that opens team editing before rematching the same battle.",
-      "version": "1.1",
+      "version": "1.2",
       "author": "UltraPokechill",
       "category": "Battle",
       "file": "workshop/editTeamFightAgain.mod",
@@ -134,16 +123,16 @@
       "tags": ["backup", "discord", "webhook", "save", "safety"]
     },
     {
-  "id": "shinyForever",
-  "name": "Shiny Family",
-  "description": "Makes every unlocked Pokemon in an evolution family shiny once any unlocked member of that family is shiny.",
-  "image": "img/items/shinyStone.png",
-  "version": "1.1",
-  "file": "workshop/shinyFamily.mod",
-  "author": "UltraPokechill",
-  "category": "Evolution",
-  "defaultEnabled": false
-},
+      "id": "shinyFamily",
+      "name": "Shiny Family",
+      "description": "Makes every unlocked Pokemon in an evolution family shiny once any unlocked member of that family is shiny.",
+      "image": "img/items/shinyStone.png",
+      "version": "1.2",
+      "file": "workshop/shinyFamily.mod",
+      "author": "UltraPokechill",
+      "category": "Evolution",
+      "defaultEnabled": false
+    },
 
     {
       "id": "fatigueRemover",
