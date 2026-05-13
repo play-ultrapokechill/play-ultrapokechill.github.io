@@ -4,6 +4,8 @@
     "adminDebugger.mod",
     "allStarters.mod",
     "speedBattles.mod",
-    "movePresets.mod"
+    "movePresets.mod",
+    "better-auto-fight.mod",
+    "natureFix.js"
   ]
 }

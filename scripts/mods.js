@@ -1486,6 +1486,33 @@
     persist() {
       persistLinkedMods();
     },
+    patchFunction(functionName, target, replacement, all = false) {
+      if (typeof window[functionName] !== "function") {
+          console.warn(`[UltraMods] Cannot patch ${functionName}: not a function`);
+          return;
+      }
+      const original = window[functionName].toString();
+      const patched = all ? original.replaceAll(target, replacement) : original.replace(target, replacement);
+      
+      if (original === patched) {
+          console.warn(`[UltraMods] Patch failed for ${functionName}: target string not found`);
+          return;
+      }
+
+      try {
+          // Detect if it's a regular function or an arrow function
+          let fn;
+          if (patched.trim().startsWith("function")) {
+              fn = (0, eval)(`(${patched})`);
+          } else {
+              fn = (0, eval)(patched);
+          }
+          window[functionName] = fn;
+          console.log(`[UltraMods] Patched function ${functionName} successfully`);
+      } catch (error) {
+          console.error(`[UltraMods] Failed to apply patch to ${functionName}`, error);
+      }
+    },
     formatNumber
   };
 
