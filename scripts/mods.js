@@ -278,6 +278,18 @@
       },
       get move() {
         return typeof move === "undefined" ? undefined : move;
+      },
+      get ability() {
+        return typeof ability === "undefined" ? undefined : ability;
+      },
+      get areas() {
+        return typeof areas === "undefined" ? undefined : areas;
+      },
+      get field() {
+        return typeof field === "undefined" ? undefined : field;
+      },
+      get exploreActiveMember() {
+        return typeof exploreActiveMember === "undefined" ? undefined : exploreActiveMember;
       }
     };
   }
@@ -581,6 +593,7 @@
     renderList();
     renderWorkshop();
     persistLinkedMods();
+    if (enabled) runHook("onRefresh", {});
     if (typeof saveGame === "function") saveGame();
   }
 
@@ -1389,6 +1402,7 @@
     renderList();
     renderWorkshop();
     persistLinkedMods();
+    if (enabled) runHook("onRefresh", {});
     if (typeof saveGame === "function") saveGame();
   }
 
@@ -1416,6 +1430,7 @@
     renderList();
     renderWorkshop();
     persistLinkedMods();
+    if (enabled) runHook("onRefresh", {});
     if (typeof saveGame === "function") saveGame();
   }
 
@@ -1452,6 +1467,7 @@
     renderList();
     renderWorkshop();
     persistLinkedMods();
+    if (enabled) runHook("onRefresh", {});
     if (typeof saveGame === "function") saveGame();
   }
 
@@ -1464,6 +1480,7 @@
     renderList();
     renderWorkshop();
     persistLinkedMods();
+    if (enabled) runHook("onRefresh", {});
     if (typeof saveGame === "function") saveGame();
   }
 

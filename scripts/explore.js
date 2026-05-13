@@ -2314,6 +2314,9 @@ const statusBuffs = ['burn', 'freeze', 'confused', 'paralysis', 'poisoned', 'sle
 
 
 let exploreActiveMember = 'slot1'
+window.exploreActiveMember = exploreActiveMember;
+window.team = team;
+
 let exploreCombatPlayerTurn = 1
 let barProgressPlayer = 0;
 let nextMoveBoxPlayer;

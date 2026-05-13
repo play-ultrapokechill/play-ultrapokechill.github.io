@@ -113,8 +113,8 @@
     {
       "id": "betterGenetics",
       "name": "Better Genetics",
-      "description": "Adds Energy Root quick-use controls and an optional 10-second Quick Genetics mode.",
-      "version": "1.0",
+      "description": "Adds Energy Root quick-use controls and an optional 5-second Quick Genetics mode.",
+      "version": "1.1",
       "author": "UltraPokechill",
       "category": "Genetics",
       "file": "workshop/betterGenetics.mod",
