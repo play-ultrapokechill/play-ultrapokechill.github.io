@@ -1402,7 +1402,7 @@
     renderList();
     renderWorkshop();
     persistLinkedMods();
-    if (enabled) runHook("onRefresh", {});
+    runHook("onRefresh", {});
     if (typeof saveGame === "function") saveGame();
   }
 
@@ -1430,7 +1430,7 @@
     renderList();
     renderWorkshop();
     persistLinkedMods();
-    if (enabled) runHook("onRefresh", {});
+    runHook("onRefresh", {});
     if (typeof saveGame === "function") saveGame();
   }
 
@@ -1467,7 +1467,7 @@
     renderList();
     renderWorkshop();
     persistLinkedMods();
-    if (enabled) runHook("onRefresh", {});
+    runHook("onRefresh", {});
     if (typeof saveGame === "function") saveGame();
   }
 
@@ -1480,7 +1480,7 @@
     renderList();
     renderWorkshop();
     persistLinkedMods();
-    if (enabled) runHook("onRefresh", {});
+    runHook("onRefresh", {});
     if (typeof saveGame === "function") saveGame();
   }
 
