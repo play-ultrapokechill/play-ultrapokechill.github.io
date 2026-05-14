@@ -1,9 +1,0 @@
-{
-  "id": "cosmoemEvolveSimple",
-  "name": "Cosmoem Evolution (Simple)",
-  "description": "Makes Cosmoem evolve at level 53 (Solgaleo during day, Lunala during night).",
-  "version": "1.0",
-  "author": "UltraPokechill",
-  "category": "Evolution",
-  "defaultEnabled": true
-}
