@@ -1,9 +1,0 @@
-{
-  "id": "workshopWelcome",
-  "name": "Workshop Welcome",
-  "description": "Example download-only mod used to test the GitHub Pages Workshop flow.",
-  "image": "img/items/endorsement.png",
-  "version": "1.0.0",
-  "author": "UltraPokechill",
-  "category": "Example"
-}
