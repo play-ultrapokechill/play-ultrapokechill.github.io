@@ -102,6 +102,16 @@
       "tags": ["items", "rare-candy", "quality-of-life"]
     },
     {
+    "id": "incomplete_famillies",
+    "name": "Incomplete Families",
+    "description": "Option for the shiny filter that shows the pokemons famillies that are not fully shiny",
+    "file": "workshop/IncompleteFamilies.mod",
+    "image": "mods/workshop/incompletefModIcon.png",
+    "version": "1.1",
+    "author": "LPF",
+    "category": "Pokedex"
+  },
+    {
       "id": "betterGenetics",
       "name": "Better Genetics",
       "description": "Adds Energy Root quick-use controls and an optional 5-second Quick Genetics mode.",
