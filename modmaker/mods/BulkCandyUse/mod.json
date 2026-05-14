@@ -1,0 +1,10 @@
+{
+  "id": "bulkCandyUse",
+  "name": "Bulk Candy Use",
+  "description": "Adds bulk-use choices for Rare Candy when selecting a Pokemon.",
+  "image": "img/items/rareCandy.png",
+  "version": "1.1",
+  "author": "UltraPokechill",
+  "category": "Items",
+  "defaultEnabled": false
+}

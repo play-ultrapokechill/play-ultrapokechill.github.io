@@ -1,0 +1,10 @@
+{
+  "id": "shinyEvolve",
+  "name": "Shiny Evolve",
+  "description": "Makes evolutions from shiny Pokemon unlock shiny evolved units.",
+  "image": "img/items/shinyStone.png",
+  "version": "1.5",
+  "author": "UltraPokechill",
+  "category": "Evolution",
+  "defaultEnabled": false
+}

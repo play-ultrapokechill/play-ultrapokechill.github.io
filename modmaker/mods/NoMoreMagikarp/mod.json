@@ -1,0 +1,10 @@
+{
+  "id": "noMoreMagikarp",
+  "name": "No More Magikarp",
+  "description": "Fixes Mega-Dimension rewards so White Kyurem and M-Rayquaza reward their actual Pokemon instead of Magikarp.",
+  "image": "icon.png",
+  "version": "1.0",
+  "author": "UltraPokechill",
+  "category": "Battle",
+  "defaultEnabled": false
+}

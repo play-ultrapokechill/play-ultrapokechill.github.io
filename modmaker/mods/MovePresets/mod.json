@@ -1,0 +1,10 @@
+{
+  "id": "movePresets",
+  "name": "Move Presets",
+  "description": "Saves multiple move sets per Pokemon and remembers selected sets on team presets.",
+  "image": "img/items/tmNormal.png",
+  "version": "1.6",
+  "author": "UltraPokechill",
+  "category": "Pokemon UI",
+  "defaultEnabled": false
+}

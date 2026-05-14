@@ -1,0 +1,10 @@
+{
+  "id": "multiHeartScale",
+  "name": "Multi Heart Scale",
+  "description": "Lets Heart Scale remember multiple moves at once, spending one Heart Scale per selected move.",
+  "image": "img/items/heartScale.png",
+  "version": "1.0",
+  "author": "UltraPokechill",
+  "category": "Items",
+  "defaultEnabled": false
+}
